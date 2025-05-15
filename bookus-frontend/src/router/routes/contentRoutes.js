@@ -1,13 +1,16 @@
+import { isAuthenticated } from '@/util/guard'
+
 export default [
   {
     path: '/content',
-    name: 'Login',
+    name: 'Content',
     component: () => import('@/views/content/ContentsPage.vue')
   },
   {
     path: '/content/create',
     name: 'CreateContent',
-    component: () => import('@/views/content/CreateContentPage.vue')
+    component: () => import('@/views/content/CreateContentPage.vue'),
+    // beforeEnter:isAuthenticated
   },
   {
     path:'/content/quiz/:id',

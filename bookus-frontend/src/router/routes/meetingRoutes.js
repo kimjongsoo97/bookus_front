@@ -1,3 +1,5 @@
+import { isAuthenticated } from '@/util/guard'
+
 export default [
   {
     path: '/meeting',
