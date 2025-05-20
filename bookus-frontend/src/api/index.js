@@ -4,6 +4,7 @@ import { useLoginStore } from '@/stores/login';
 import router from '@/router';
 //axios 인스턴스 생성, 5초간 응답이없으면 자동으로 취소됨됨
 const instance = axios.create({
+  baseURL: 'http://localhost:8000', // 또는 백엔드 주소
   timeout: 5000,
 });
 //요청 인터셉터 -> 로그인 토큰이 있으면 Authorization 헤더에 bearer 토큰추가가
