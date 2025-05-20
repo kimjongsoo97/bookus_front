@@ -9,6 +9,7 @@ import memoRoutes from './routes/memoRoutes'
 import messageRoutes from './routes/messageRoutes'
 import mypageRoutes from './routes/mypageRoutes'
 import BookSplash from '@/views/BookSplash.vue'
+import HomeView from '@/views/HomeView.vue'
 
 const routes = [
   ...authRoutes,
@@ -20,8 +21,8 @@ const routes = [
   ...messageRoutes,
   ...mypageRoutes,
   {
-    path: '/',
-    name: 'home',
+    path: '/loading',
+    name: 'loading',
     component: BookSplash,
   },
   {
@@ -29,7 +30,11 @@ const routes = [
     name: 'maps',
     component: MapView
   },
-
+  {
+    path:'/',
+    name:'home',
+    component:HomeView
+  }
 ]
 
 
