@@ -7,7 +7,7 @@ const initState = {
   token: '',
   user: {
     id: '',
-    name: '',
+    email: '',
     nickname: '',
   }
 }
@@ -17,42 +17,57 @@ export const useLoginStore = defineStore('auth', () => {
 
   const isLogin = computed(() => !!state.value.user.id)
   const userId = computed(() => state.value.user.id)
-  const userName = computed(() => state.value.user.name)
+  const userEmail = computed(() => state.value.user.email)
   const nickname = computed(() => state.value.user.nickname)
 
   const decodeTokenToUser = (token) => {
-    const payload = jwtDecode(token)
-    return {
-      userId: payload.userId,
-      name:payload.userName,
-      nickname:payload.nickname
+    try {
+      const payload = jwtDecode(token)
+      return {
+        id: payload.user_id || payload.userId || '',
+        email: payload.email || '',
+        nickname: payload.nickname || '',
+      }
+    } catch (e) {
+      console.error('토큰 디코딩 실패:', e)
+      return { id: '', email: '', nickname: '' }
     }
   }
 
-  const login = async (member) => {
-    const { data } = await axios.post('/api/auth/login', member)
-    state.value = { ...data }
-    localStorage.setItem('auth', JSON.stringify(state.value))
+  const login = async (user) => {
+    try {
+      const { data } = await axios.post('/api/v1/accounts/login/', user)
+        console.log('서버 응답:', data); 
+      if (!data.token) throw new Error('토큰이 없습니다')
+
+      state.value.token = data.token
+      state.value.user = data.user || decodeTokenToUser(data.token)
+
+      localStorage.setItem('auth', JSON.stringify(state.value))
+    } catch (error) {
+      console.error('로그인 실패:', error)
+      throw error
+    }
   }
 
   const logout = () => {
-    localStorage.clear()
+    localStorage.removeItem('auth')
     state.value = { ...initState }
   }
 
   const getToken = () => state.value.token
 
-  const changeProfile = (member) => {
-    state.value.user.name = member.name
-    state.value.user.nickname = member.nickname
-    localStorage.setItem('auth', JSON.stringify(state.value))
-  }
-
   const load = () => {
     const auth = localStorage.getItem('auth')
-    if (auth !== null) {
-      state.value = JSON.parse(auth)
-      console.log('🔄 Auth loaded:', state.value)
+    if (auth) {
+      try {
+        const parsed = JSON.parse(auth)
+        state.value.token = parsed.token
+        state.value.user = parsed.user || decodeTokenToUser(parsed.token)
+      } catch (e) {
+        console.warn('auth 파싱 실패:', e)
+        logout()
+      }
     }
   }
 
@@ -61,12 +76,11 @@ export const useLoginStore = defineStore('auth', () => {
   return {
     state,
     userId,
-    userName,
+    userEmail,
     nickname,
     isLogin,
     login,
     logout,
     getToken,
-    changeProfile,
   }
 })

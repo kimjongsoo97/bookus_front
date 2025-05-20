@@ -7,31 +7,34 @@
     <p class="subtitle">로그인하고 모든 컨텐츠를 즐겨보세요.</p>
 
     <!-- 폼 -->
-    <form class="form">
+    <form class="form" @submit.prevent="handleLogin">
       <!-- 이메일 -->
       <div class="form-group">
         <label for="email">이메일</label>
-        <input type="email" id="email" placeholder="이메일 입력" />
+        <input v-model="user.email" type="email" id="email" placeholder="이메일 입력" />
       </div>
 
       <!-- 비밀번호 -->
       <div class="form-group">
         <label for="password">비밀번호</label>
         <div class="input-wrapper">
-          <input type="password" id="password" placeholder="비밀번호 입력" />
+          <input v-model="user.password" type="password" id="password" placeholder="비밀번호 입력" />
           <button type="button" class="icon-btn">👁️</button>
         </div>
       </div>
 
+      <!-- 에러 메시지 -->
+      <p v-if="errorMessage" style="color: red">{{ errorMessage }}</p>
+
       <!-- 링크 -->
       <div class="link-section">
         <p>
-          이미 회원아이디/비밀번호를 잊어버리셨나요?
+          아이디/비밀번호를 잊어버리셨나요?
           <a href="#">아이디/비밀번호 찾기 &gt;</a>
         </p>
         <p>
           북어스가 처음이신가요?
-          <a href="#">회원가입하기 &gt;</a>
+          <a href="/signup">회원가입하기 &gt;</a>
         </p>
       </div>
 
@@ -41,8 +44,27 @@
   </div>
 </template>
 
-<script setup lang="ts">
-// 추후 상태 관리, 로그인 처리 등 가능
+<script setup>
+import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useLoginStore } from '@/stores/login'
+const router = useRouter();
+const errorMessage = ref('');
+
+const auth=useLoginStore();
+const user=reactive({
+    username:'',
+    password:'',
+})
+const handleLogin = async () => {
+  console.log(user)
+  try {
+    await auth.login(user)
+    router.push('/')
+  } catch (error) {
+    console.error('로그인 실패:', error)
+  }
+  }
 </script>
 
 <style scoped>
