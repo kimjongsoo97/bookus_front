@@ -11,12 +11,16 @@
     <p class="description">회원가입이 완료되었습니다.<br />북어스를 즐겨보세요.</p>
 
     <!-- 시작하기 버튼 -->
-    <button class="start-btn">시작하기</button>
+    <button class="start-btn" @click="router.push('/login')">로그인 하러가기</button>
+
   </div>
 </template>
 
 <script setup lang="ts">
-// 라우터 이동 등 추가 가능
+import { useRouter } from 'vue-router';
+
+const router=useRouter();
+
 </script>
 
 <style scoped>

@@ -65,6 +65,7 @@ const handleLogin = async () => {
     console.error('로그인 실패:', error)
   }
   }
+
 </script>
 
 <style scoped>
