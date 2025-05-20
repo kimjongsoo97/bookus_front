@@ -1,21 +1,32 @@
 <template>
   <nav class="bottom-nav">
-    <div v-for="item in navItems" :key="item.label" class="nav-item">
-      <span>{{ item.icon }}</span>
+    <div
+      v-for="item in navItems"
+      :key="item.label"
+      class="nav-item"
+      @click="router.push(item.route)"
+    >
+      <i :class="item.iconClass"></i>
       <span class="label">{{ item.label }}</span>
     </div>
   </nav>
 </template>
 
+
 <script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
 const navItems = [
-  { icon: '🏠', label: '홈' },
-  { icon: '📚', label: '독서모임' },
-  { icon: '📖', label: '책' },
-  { icon: '💬', label: '커뮤니티' },
-  { icon: '👤', label: '마이페이지' }
+  { iconClass: 'fa-solid fa-house', label: '홈', route: '/' },
+  { iconClass: 'fa-solid fa-users', label: '독서모임', route: '/meeting' },
+  { iconClass: 'fa-solid fa-book', label: '책', route: '/books' },
+  { iconClass: 'fa-solid fa-comments', label: '커뮤니티', route: '/community' },
+  { iconClass: 'fa-solid fa-user', label: '마이페이지', route: '/mypage' }
 ]
 </script>
+
 
 <style scoped>
 .bottom-nav {
