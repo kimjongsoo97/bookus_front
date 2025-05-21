@@ -10,12 +10,13 @@ export default [
     path: '/community/create',
     name: 'create',
     component: () => import('@/views/community/CommunityCreatePage.vue'),
-    // beforeEnter:isAuthenticated,
+    beforeEnter:isAuthenticated,
   },
   {
     path:'/community/detail/:id',
-    name:'detail',
-    component:() => import('@/views/community/CommunityDetailPage.vue')
+    name:'communitydetail',
+    component:() => import('@/views/community/CommunityDetailPage.vue'),
+    beforEnter:isAuthenticated
   },
 
 ]

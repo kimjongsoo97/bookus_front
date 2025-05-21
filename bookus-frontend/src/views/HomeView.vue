@@ -76,6 +76,12 @@
 
 <script setup>
 import BottomNav from '@/components/common/BottomNav.vue'
+
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+
 </script>
 
 <style scoped>

@@ -5,13 +5,13 @@ export default[
         path:'/mypage',
         name:'MyPage',
         component:()=> import('@/views/mypage/MyPage.vue'),
-        // beforeEnter:isAuthenticated
+        beforeEnter:isAuthenticated
     },
     {
         path:'/mypage/group',
         name:'MyGroupPage',
         component:()=> import('@/views/mypage/MyGroupPage.vue'),
-        // beforeEnter:isAuthenticated
+        beforeEnter:isAuthenticated
 
     },
     // {
