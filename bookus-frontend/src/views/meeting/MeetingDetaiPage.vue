@@ -2,22 +2,29 @@
   <div class="meeting-detail-page">
     <!-- 상단 헤더 -->
     <header class="header">
-      <button class="back-btn">←</button>
-      <h1>역삼동 책벌레 나와</h1>
+      <button class="back-btn" @click="$router.back()">←</button>
+      <h1>{{ meeting.name }}</h1>
       <button class="search-btn">🔍</button>
     </header>
 
     <!-- 스크롤 영역 -->
     <div class="scroll-container">
       <!-- 썸네일 이미지 -->
-      <!-- <img src="@/assets/thumbnail.png" class="thumbnail" alt="모임 이미지" /> -->
+      <!-- <img :src="meeting.thumbnail_url" class="thumbnail" alt="모임 이미지" /> -->
 
       <!-- 모임장 / 소개 -->
+      <section class="section" v-if="book.title">
+        <p class="label">📚 선정된 책</p>
+        <div class="book-info">
+          <img :src="book.img" alt="책 커버" class="book-cover" />
+        </div>
+      </section>
+
       <section class="section">
-        <p class="label">모임장: <strong>역삼동책씨</strong></p>
-        <p class="desc">
-          20~30대 책벌레님들 같이 책읽고 의견도 공유해요! 😊
+        <p class="label">
+          모임장: <strong>{{ meeting.creator_nickname }}</strong>
         </p>
+        <p class="desc">모임소개: {{ meeting.description }}</p>
       </section>
 
       <!-- AI 추천 멘트 -->
@@ -29,14 +36,20 @@
       <!-- 장소 및 날짜 -->
       <section class="section">
         <p class="label">모임장소 및 날짜</p>
-        <!-- <img src="@/assets/map.png" class="map-img" /> -->
-        <p class="desc">📍 역삼역 222호 222번지 <br />🕒 5/12(월) 저녁 7시</p>
+        <!-- <img :src="meeting.map_image_url" class="map-img" /> -->
+        <p class="desc">
+          📍 {{ meeting.location }}<br />
+          🕒 {{ formatDate(meeting.meeting_date) }}
+        </p>
       </section>
 
       <!-- 우리들만의 챌린지 -->
       <section class="section">
-        <p class="label">우리들만의 챌린지 <span class="more" h>전체보기 ></span></p>
+        <p class="label">
+          우리들만의 챌린지 <span class="more">전체보기 ></span>
+        </p>
         <div class="challenge-list">
+          <!-- 추후 챌린지 배열 받아서 v-for 처리 가능 -->
           <div class="challenge">
             <span>5월<br />4</span>
             <p>책을 읽었을 때 가장 먼저 떠오른 이미지를 말해주세요!</p>
@@ -53,7 +66,6 @@
         <p class="label">이런 모임도 추천해요</p>
         <ul class="recommend-list">
           <li class="recommend">
-            <!-- <img src="@/assets/book1.png" /> -->
             <div class="info">
               <strong>왕자 릴 사람</strong>
               <p>진심과 감정이 녹아있는...</p>
@@ -61,7 +73,6 @@
             <span class="due">D-17</span>
           </li>
           <li class="recommend">
-            <!-- <img src="@/assets/book2.png" /> -->
             <div class="info">
               <strong>온다온다 소년이 온다</strong>
               <p>6월 추천도서로 등록된 작품...</p>
@@ -81,7 +92,47 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import MeetingAPI from "@/api/meetingAPI";
+import BookAPI from "@/api/bookAPI";
 
+const route = useRoute();
+const meeting = ref({
+  name: "",
+  creator_nickname: "",
+  description: "",
+  meeting_date: "",
+  location: "",
+  book: "",
+});
+
+const book = ref({
+  title: "",
+  author: "",
+  img: "",
+});
+
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+}
+
+onMounted(async () => {
+  const id = route.params.id;
+  try {
+    const res = await MeetingAPI.get(id);
+    meeting.value = res.data;
+
+    // meeting에 book ID가 있으면 책 정보 불러오기
+    if (meeting.value.book) {
+      const bookRes = await BookAPI.get(meeting.value.book);
+      book.value = bookRes.data;
+    }
+  } catch (err) {
+    console.error("모임 상세 정보 조회 실패:", err);
+  }
+});
 </script>
 
 <style scoped>
@@ -90,7 +141,7 @@
   max-width: 375px;
   margin: 0 auto;
   background-color: #fff;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   display: flex;
   flex-direction: column;
   height: 100vh;

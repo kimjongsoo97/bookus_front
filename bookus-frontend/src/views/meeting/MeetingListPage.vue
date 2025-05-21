@@ -1,11 +1,16 @@
+잘된다 이제
 <template>
   <div class="meeting-list-page">
     <HeaderComponent title="모임 전체 페이지" />
 
     <!-- 탭 필터 -->
     <div class="tab-bar">
-      <button :class="{ active: sort === 'latest' }" @click="sort = 'latest'">최신 순</button>
-      <button :class="{ active: sort === 'due' }" @click="sort = 'due'">마감 순</button>
+      <button :class="{ active: sort === 'latest' }" @click="sort = 'latest'">
+        최신 순
+      </button>
+      <button :class="{ active: sort === 'due' }" @click="sort = 'due'">
+        마감 순
+      </button>
     </div>
 
     <!-- 모임 리스트 -->
@@ -14,17 +19,23 @@
         v-for="(item, i) in sortedMeetings"
         :key="i"
         class="meeting-item"
+        @click="goToDetail(item.id)"
       >
         <div class="meeting-info">
           <div class="meeting-header">
             <h3 class="meeting-title">{{ item.name }}</h3>
-            <span class="meeting-date">{{ formatDate(item.meeting_date) }}</span>
+            <span class="meeting-date">{{
+              formatDate(item.meeting_date)
+            }}</span>
           </div>
 
           <p class="meeting-desc">{{ item.description }}</p>
 
           <div class="meeting-footer">
-            <span class="member-count">인원수: {{ item.current_member_count }} / {{ item.max_members }}</span>
+            <span class="member-count"
+              >인원수: {{ item.current_member_count }} /
+              {{ item.max_members }}</span
+            >
           </div>
         </div>
       </li>
@@ -35,48 +46,61 @@
 </template>
 
 <script setup lang="ts">
-import HeaderComponent from '@/components/common/HeaderComponent.vue'
-import BottomNav from '@/components/common/BottomNav.vue'
-import { ref, computed, onMounted } from 'vue'
-import MeetingAPI from '@/api/meetingAPI'
+import HeaderComponent from "@/components/common/HeaderComponent.vue";
+import BottomNav from "@/components/common/BottomNav.vue";
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import MeetingAPI from "@/api/meetingAPI";
 
-const sort = ref('latest')
-const meetings = ref([])
+const router = useRouter();
+
+function goToDetail(id: number) {
+  router.push({ name: "MeetingDetail", params: { id } });
+}
+
+const sort = ref("latest");
+const meetings = ref([]);
 
 onMounted(async () => {
   try {
-    const response = await MeetingAPI.all()
-    meetings.value = response.data
+    const response = await MeetingAPI.all();
+    meetings.value = response.data;
   } catch (error) {
-    console.error('모임 목록 불러오기 실패:', error)
+    console.error("모임 목록 불러오기 실패:", error);
   }
-})
+});
 
 // 날짜 포맷 함수
 function formatDate(dateStr: string): string {
-  const date = new Date(dateStr)
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+  const date = new Date(dateStr);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
 // 정렬된 목록 반환 (sort 값에 따라 동작)
 const sortedMeetings = computed(() => {
   return [...meetings.value].sort((a, b) => {
-    if (sort.value === 'latest') {
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    } else if (sort.value === 'due') {
-      return new Date(a.meeting_date).getTime() - new Date(b.meeting_date).getTime()
+    if (sort.value === "latest") {
+      return (
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    } else if (sort.value === "due") {
+      return (
+        new Date(a.meeting_date).getTime() - new Date(b.meeting_date).getTime()
+      );
     }
-    return 0
-  })
-})
-
+    return 0;
+  });
+});
 </script>
 <style scoped>
 .meeting-list-page {
   width: 100vw;
   max-width: 375px;
   margin: 0 auto;
-  font-family: 'Pretendard', sans-serif;
+  font-family: "Pretendard", sans-serif;
   background: #fff;
   color: #1a1a1a;
   box-sizing: border-box;
@@ -110,16 +134,15 @@ const sortedMeetings = computed(() => {
   position: relative;
 }
 
-
 .tab-bar button.active {
-  color: #00A1FD;
+  color: #00a1fd;
 }
 
 .tab-bar button.active::after {
   content: "";
   display: block;
   height: 2px;
-  background-color: #00A1FD;
+  background-color: #00a1fd;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -165,7 +188,7 @@ const sortedMeetings = computed(() => {
 
 .meeting-due {
   font-size: 14px;
-  color: #FF962D;
+  color: #ff962d;
   margin-left: 8px;
   white-space: nowrap;
 }
