@@ -6,7 +6,6 @@
       <img class="avatar" src="https://via.placeholder.com/60x60.png?text=🙂" alt="profile" />
       <div class="info">
         <p class="name">심심핑</p>
-        <p class="phone">010-1234-1234</p>
       </div>
       <button class="edit-nickname">닉네임변경</button>
     </div>
@@ -23,6 +22,11 @@
 </template>
 
 <script setup lang="ts">
+
+import BottomNav from '@/components/common/BottomNav.vue';
+import { useLoginStore } from '@/stores/login';
+
+
 const menus = [
   {
     label: '비밀번호 변경하기',

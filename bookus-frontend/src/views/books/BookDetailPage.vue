@@ -5,10 +5,10 @@
 
     <!-- 책 정보 -->
     <div class="book-info">
-      <img :src="book.image" alt="book" class="cover" />
+      <img :src="book.img" alt="book" class="cover" />
       <h2 class="title">{{ book.title }}</h2>
       <p class="author">{{ book.author }}</p>
-      <p class="desc">{{ book.description }}</p>
+      <p class="desc">{{ book.content }}</p>
     </div>
 
     <!-- AI 추천 박스 -->
@@ -42,32 +42,38 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import BookAPI from '@/api/bookAPI'
+
 import HeaderComponent from '@/components/common/HeaderComponent.vue'
 import BottomNav from '@/components/common/BottomNav.vue'
 import GroupCard from '@/components/group/GroupCard.vue'
 
-const book = {
-  title: '채식주의자',
-  author: '한강',
-  image: 'https://via.placeholder.com/180x260?text=책표지',
-  description:
-    '2016년 맨부커상을 수상한 한강의 대표작. 금욕적 삶과 인간 본성의 충돌을 다룬 이야기.',
+const route = useRoute()
+const bookId = route.params.id
+
+const book = ref({
+  title: '',
+  author: '',
+  img: '',
+  content: '',
+})
+
+const groups = ref([]) // 필요 시 연동 가능
+
+const fetchBookDetail = async () => {
+  try {
+    const response = await BookAPI.get(bookId)
+    book.value = response.data
+  } catch (err) {
+    console.error('책 상세 조회 실패', err)
+  }
 }
 
-const groups = [
-  {
-    title: '왕자실 사람',
-    description: '이 책을 읽고 주인공의 감정을 토론해요',
-    dday: 'D-17',
-    image: 'https://via.placeholder.com/80x100?text=책',
-  },
-  {
-    title: '왕자실 사람',
-    description: '같은 책을 읽고 감상을 나눠요',
-    dday: 'D-17',
-    image: 'https://via.placeholder.com/80x100?text=책',
-  },
-]
+onMounted(() => {
+  fetchBookDetail()
+})
 </script>
 <style scoped>
 .book-detail-page {
