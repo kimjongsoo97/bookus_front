@@ -7,6 +7,11 @@ export default [
     component: () => import('@/views/meeting/MeetingListPage.vue')
   },
   {
+    path:'/meeting/create',
+    name:'MeetingCreate',
+    component:()=>import('@/views/meeting/MeetingCreatePage.vue')
+  },
+  {
     path: '/meeting/detail/:id',
     name: 'MeetingDetail',
     component: () => import('@/views/meeting/MeetingDetaiPage.vue')

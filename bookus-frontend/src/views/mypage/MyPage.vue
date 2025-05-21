@@ -5,13 +5,13 @@
     <div class="profile">
       <img class="avatar" src="https://via.placeholder.com/60x60.png?text=🙂" alt="profile" />
       <div class="info">
-        <p class="name">심심핑</p>
+        <p class="name">{{ auth.nickname }}</p>
       </div>
       <button class="edit-nickname">닉네임변경</button>
     </div>
 
     <ul class="menu-list">
-      <li v-for="(menu, i) in menus" :key="i" @click="(menu.label)">
+      <li v-for="(menu, i) in menus" :key="i" @click="goTo(menu)">
         <img :src="menu.icon" class="icon" />
         <span>{{ menu.label }}</span>
       </li>
@@ -25,26 +25,40 @@
 
 import BottomNav from '@/components/common/BottomNav.vue';
 import { useLoginStore } from '@/stores/login';
+import { useRouter,useRoute } from 'vue-router';
 
+const auth = useLoginStore();
 
+const router=useRouter();
+const route=useRoute();
 const menus = [
   {
     label: '비밀번호 변경하기',
     icon: 'https://cdn-icons-png.flaticon.com/128/747/747545.png',
+    route:'/changepassword'
   },
   {
     label: '내 모임',
     icon: 'https://cdn-icons-png.flaticon.com/128/1250/1250651.png',
-  },
+    route:'/mypage/group'
+},
   {
     label: '쪽지함',
     icon: 'https://cdn-icons-png.flaticon.com/128/561/561127.png',
+    route:'/message'
   },
   {
     label: '메모',
     icon: 'https://cdn-icons-png.flaticon.com/128/1827/1827449.png',
+    route:'/memo'
   },
 ]
+const goTo = (menu: { route?: string }) => {
+  if (menu.route) {
+    router.push(menu.route);
+  }
+};
+
 </script>
 
 <style scoped>

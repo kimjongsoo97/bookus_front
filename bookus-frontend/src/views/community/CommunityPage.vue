@@ -18,33 +18,22 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import HeaderComponent from '@/components/common/HeaderComponent.vue'
 import BottomNav from '@/components/common/BottomNav.vue'
 import CommunityPostCard from '@/components/community/CommunityPostCard.vue'
+import CommunityAPI from '@/api/communityAPI' // ← 정확한 파일명 경로 확인
 
-const posts = [
-  {
-    title: '책 나눔 해요!!',
-    preview: '최근 읽었던 책인데... 나눔하고 싶어요',
-    author: '한루도리',
-    tag: '나눔',
-    thumbnail: 'https://via.placeholder.com/50x70?text=책',
-  },
-  {
-    title: '책 추천 해요!!',
-    preview: '피카츄가 좋아하는 책은 바로 이겁니다!',
-    author: '피카츄',
-    tag: '추천',
-    thumbnail: 'https://via.placeholder.com/50x70?text=책',
-  },
-  {
-    title: '이 책 아시는 분?',
-    preview: '책 커버는 기억나는데 제목이 생각이 안나요ㅠㅠ',
-    author: '하츄핑',
-    tag: '질문',
-    thumbnail: 'https://via.placeholder.com/50x70?text=책',
-  },
-]
+const posts = ref([])
+
+onMounted(async () => {
+  try {
+    const res = await CommunityAPI.all()
+    posts.value = res.data || [] // API 응답 결과를 바인딩
+  } catch (err) {
+    console.error('커뮤니티 게시글 불러오기 실패:', err)
+  }
+})
 </script>
 
 <style scoped>
