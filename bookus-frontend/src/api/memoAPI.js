@@ -9,14 +9,14 @@ const MemoAPI = {
   get(memoId){
     return api.get(`${BASE_URL}/detail/${memoId}/`)
   },
-  create(memo,memoId){
-    return api.post(`${BASE_URL}/create/${memoId}`,memo)
+  create(memo){
+    return api.post(`${BASE_URL}/create/`,memo)
   },
   update(memo,memoId){
-    return api.post(`${BASE_URL}/update/${memoId}`,memo)
+    return api.post(`${BASE_URL}/update/${memoId}/`,memo)
   },
   delete(memoId){
-    return api.delete(`${BASE_URL}/delete/${memoId}`)
+    return api.delete(`${BASE_URL}/delete/${memoId}/`)
   }
 };
 

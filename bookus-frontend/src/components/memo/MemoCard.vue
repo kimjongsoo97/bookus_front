@@ -1,13 +1,7 @@
 <template>
-  <div class="memo-card">
-    <img :src="memo.image" alt="책 표지" class="thumbnail" />
-    <div class="info">
-      <div class="header">
-        <h3 class="title">{{ memo.title }}</h3>
-        <span class="date">{{ memo.date }}</span>
-      </div>
-      <p class="content">{{ memo.content }}</p>
-    </div>
+  <div class="memo-card" @click="$emit('click', memo.id)">
+    <div class="memo-date">{{ formatDate(memo.date || memo.created_at) }}</div>
+    <div class="memo-content">{{ memo.content }}</div>
   </div>
 </template>
 
@@ -15,49 +9,47 @@
 const props = defineProps({
   memo: Object
 })
+
+const formatDate = (isoString) => {
+  if (!isoString) return ''
+  const date = new Date(isoString)
+  return date.toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
 </script>
 
 <style scoped>
 .memo-card {
-  display: flex;
-  background-color: #fff;
-  margin: 8px 16px;
-  padding: 12px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  align-items: flex-start;
+  background-color: #fefefe;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 12px 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
 }
-.thumbnail {
-  width: 50px;
-  height: 70px;
-  object-fit: cover;
-  border-radius: 4px;
-  margin-right: 12px;
+
+.memo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
-.info {
-  flex: 1;
-}
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.title {
-  font-size: 15px;
-  font-weight: 600;
-}
-.date {
+
+.memo-date {
   font-size: 12px;
-  color: #aaa;
+  color: #888;
+  text-align: right;
 }
-.content {
-  font-size: 14px;
-  color: #555;
-  margin-top: 6px;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+
+.memo-content {
+  font-size: 15px;
+  color: #333;
+  margin-top: 8px;
+  line-height: 1.5;
+  white-space: pre-wrap;
 }
 </style>
