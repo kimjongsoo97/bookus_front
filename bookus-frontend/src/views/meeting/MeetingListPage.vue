@@ -1,4 +1,3 @@
-잘된다 이제
 <template>
   <div class="meeting-list-page">
     <HeaderComponent title="모임 전체 페이지" />
