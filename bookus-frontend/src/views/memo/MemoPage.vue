@@ -1,7 +1,7 @@
 <template>
   <div>
     <HeaderComponent title="메모" />
-    <MemoList :memos="memoList" />
+    <MemoList :memos="memoList" @click-memo="goToDetail" />
     <BottomNav />
   </div>
 </template>
@@ -12,9 +12,11 @@ import MemoList from '@/components/memo/MemoList.vue'
 import BottomNav from '@/components/common/BottomNav.vue'
 
 import MemoAPI from '@/api/memoAPI'
-import { ref,onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 const memoList = ref([])
+const router = useRouter()
 
 onMounted(async () => {
   try {
@@ -24,4 +26,9 @@ onMounted(async () => {
     console.error('메모 불러오기 실패:', err)
   }
 })
+
+const goToDetail = (memoId) => {
+  console.log('선택된 메모:', memoId) // 로그 찍어보기
+  router.push(`/memo/detail/${memoId}`)
+}
 </script>
