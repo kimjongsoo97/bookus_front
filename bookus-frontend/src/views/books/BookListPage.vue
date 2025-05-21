@@ -38,7 +38,7 @@ const categories = [
 ]
 
 // 선택된 카테고리 이름 (SortTabs에서는 name 기반으로 바인딩)
-const selectedCategoryName = ref('소설/시/희곡')
+const selectedCategoryName = ref('소설')
 
 // 백엔드 요청용: name으로부터 id 찾기
 const selectedCategoryId = computed(() => {

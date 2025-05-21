@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import MemoCard from './MemoCard.vue'
+import MemoCard from './MemoCard.vue';
 const props = defineProps({
   memos: Array
 })
