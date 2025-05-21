@@ -12,7 +12,6 @@
   </nav>
 </template>
 
-
 <script setup>
 import { useRouter } from 'vue-router'
 
@@ -27,24 +26,36 @@ const navItems = [
 ]
 </script>
 
-
 <style scoped>
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 56px;
+  width: 100vw;
+  height: 60px;
   background-color: white;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #e9e9e9;
+  box-sizing: border-box;
+  z-index: 1000;
 }
+
 .nav-item {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 12px;
+  justify-content: center;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 11px;
+  padding-top: 4px;
+}
+
+.nav-item i {
+  font-size: 18px;
+  margin-bottom: 8px; /* 아이콘과 텍스트 간격 확보 */
 }
 </style>

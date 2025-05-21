@@ -35,7 +35,7 @@
 
       <!-- 우리들만의 챌린지 -->
       <section class="section">
-        <p class="label">우리들만의 챌린지 <span class="more">전체보기 ></span></p>
+        <p class="label">우리들만의 챌린지 <span class="more" h>전체보기 ></span></p>
         <div class="challenge-list">
           <div class="challenge">
             <span>5월<br />4</span>
@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-// 추후 데이터 연동 및 이동 로직 삽입 가능
+
 </script>
 
 <style scoped>
