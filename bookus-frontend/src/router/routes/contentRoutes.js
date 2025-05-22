@@ -2,7 +2,7 @@ import { isAuthenticated } from '@/util/guard'
 
 export default [
   {
-    path: '/meeting/:meetingId/contents',
+    path: '/meeting/detail/:meetingId/contents',
     name: 'Content',
     component: () => import('@/views/content/ContentsPage.vue'),
     // 모임별 컨텐츠 리스트 페이지
