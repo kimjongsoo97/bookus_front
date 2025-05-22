@@ -14,7 +14,16 @@ const MeetingAPI = {
   },
   delete(meetingId){
     return api.delete(`${BASE_URL}/delete/${meetingId}/`)
-  }
+  },
+  join(meetingId) {
+    return api.post(`${BASE_URL}/join/${meetingId}/`)
+  },
+  withdraw(meetingId) {
+    return api.post(`${BASE_URL}/withdraw/${meetingId}/`)
+  },
+  getContents(meetingId) {
+    return api.get(`/api/v1/meeting/detail/${meetingId}/contents/`)
+  },
 };
 
 export default MeetingAPI 

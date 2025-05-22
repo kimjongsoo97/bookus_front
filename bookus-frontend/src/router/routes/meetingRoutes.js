@@ -17,12 +17,12 @@ export default [
     component: () => import('@/views/meeting/MeetingDetaiPage.vue')
   },
   {
-    path:'/content/quiz/:id',
+    path:'/contents/quiz/:id',
     name:'QuizDetail',
     component:() => import('@/views/content/QuizDetailPage.vue')
   },
   {
-    path:'/content/review/:id',
+    path:'/contents/review/:id',
     name:'ReviewDetail',
     component:()=> import('@/views/content/ReviewDetailPage.vue')
   },

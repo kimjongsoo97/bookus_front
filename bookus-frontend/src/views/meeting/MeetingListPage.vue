@@ -14,86 +14,98 @@
 
     <!-- 모임 리스트 -->
     <ul class="meeting-list">
-      <li
-        v-for="(item, i) in sortedMeetings"
-        :key="i"
-        class="meeting-item"
-        @click="goToDetail(item.id)"
-      >
-        <div class="meeting-info">
-          <div class="meeting-header">
-            <h3 class="meeting-title">{{ item.name }}</h3>
-            <span class="meeting-date">{{
-              formatDate(item.meeting_date)
-            }}</span>
-          </div>
+  <li
+    v-for="(item, i) in sortedMeetings"
+    :key="i"
+    class="meeting-item"
+    @click="goToDetail(item.id)"
+  >
+    <img v-if="item.book_img" :src="item.book_img" class="book-img" />
 
-          <p class="meeting-desc">{{ item.description }}</p>
+    <div class="meeting-info">
+      <div class="meeting-header">
+        <h3 class="meeting-title">{{ item.name }}</h3>
+        <span class="meeting-date">{{ formatDate(item.meeting_date) }}</span>
+      </div>
 
-          <div class="meeting-footer">
-            <span class="member-count"
-              >인원수: {{ item.current_member_count }} /
-              {{ item.max_members }}</span
-            >
-          </div>
-        </div>
-      </li>
-    </ul>
+      <p class="meeting-desc">{{ item.description }}</p>
+
+      <div class="meeting-footer">
+        <span class="member-count">인원수: {{ item.current_member_count }} / {{ item.max_members }}</span>
+      </div>
+    </div>
+  </li>
+</ul>
 
     <BottomNav />
   </div>
 </template>
 
-<script setup lang="ts">
-import HeaderComponent from "@/components/common/HeaderComponent.vue";
-import BottomNav from "@/components/common/BottomNav.vue";
-import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import MeetingAPI from "@/api/meetingAPI";
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import HeaderComponent from '@/components/common/HeaderComponent.vue';
+import BottomNav from '@/components/common/BottomNav.vue';
+import MeetingAPI from '@/api/meetingAPI';
+import BookAPI from '@/api/bookAPI';
 
 const router = useRouter();
 
-function goToDetail(id: number) {
-  router.push({ name: "MeetingDetail", params: { id } });
-}
-
-const sort = ref("latest");
+const sort = ref('latest');
 const meetings = ref([]);
 
-onMounted(async () => {
-  try {
-    const response = await MeetingAPI.all();
-    meetings.value = response.data;
-  } catch (error) {
-    console.error("모임 목록 불러오기 실패:", error);
-  }
-});
-
-// 날짜 포맷 함수
-function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-    2,
-    "0"
-  )}-${String(date.getDate()).padStart(2, "0")}`;
+function goToDetail(id) {
+  router.push({ name: 'MeetingDetail', params: { id } });
 }
 
-// 정렬된 목록 반환 (sort 값에 따라 동작)
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+// 정렬된 리스트 반환
 const sortedMeetings = computed(() => {
   return [...meetings.value].sort((a, b) => {
-    if (sort.value === "latest") {
-      return (
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-    } else if (sort.value === "due") {
-      return (
-        new Date(a.meeting_date).getTime() - new Date(b.meeting_date).getTime()
-      );
+    if (sort.value === 'latest') {
+      return new Date(b.created_at) - new Date(a.created_at);
+    } else if (sort.value === 'due') {
+      return new Date(a.meeting_date) - new Date(b.meeting_date);
     }
     return 0;
   });
 });
-</script>
+
+// 전체 모임 및 책 이미지 불러오기
+onMounted(async () => {
+  try {
+    const response = await MeetingAPI.all();
+    const fetchedMeetings = response.data;
+
+    // 각 모임에 대해 책 정보 요청
+    const enrichedMeetings = await Promise.all(
+      fetchedMeetings.map(async (meeting) => {
+        if (meeting.book) {
+          try {
+            const bookRes = await BookAPI.get(meeting.book);
+            meeting.book_img = bookRes.data.img; // 이미지 속성 추가
+          } catch (e) {
+            console.error('책 정보 가져오기 실패:', e);
+            meeting.book_img = ''; // 실패 시 빈 이미지 처리
+          }
+        } else {
+          meeting.book_img = '';
+        }
+        return meeting;
+      })
+    );
+
+    meetings.value = enrichedMeetings;
+  } catch (error) {
+    console.error('모임 목록 불러오기 실패:', error);
+  }
+});
+</script> 
+
 <style scoped>
 .meeting-list-page {
   width: 100vw;
