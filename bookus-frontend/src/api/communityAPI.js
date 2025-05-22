@@ -6,18 +6,18 @@ const CommunityAPI = {
   all(){
     return api.get(`${BASE_URL}/`)
   },
-  create(commnuity){
-    return api.post(`${BASE_URL}/create/`,commnuity)
-  },
+  create(formData) {
+  return api.post(`${BASE_URL}/create/`, formData)
+},
   get(commnuityId){
-    return api.post(`${BASE_URL}/detail/${commnuityId}/`)
+    return api.get(`${BASE_URL}/detail/${commnuityId}/`)
   },
   delete(commnuityId){
-    return api.post(`${BASE_URL}/${commnuityId}/`)
+    return api.post(`${BASE_URL}/delete/${commnuityId}/`)
   },
   update(commnuity,commnuityId){
     return api.post(`${BASE_URL}/update/${commnuityId}/`,commnuity)
-  }
+  },
 };
 
 export default CommunityAPI
