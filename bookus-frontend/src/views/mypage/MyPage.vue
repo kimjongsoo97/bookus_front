@@ -33,7 +33,7 @@ const router=useRouter();
 const route=useRoute();
 const menus = [
   {
-    label: '비밀번호 변경하기',
+    label: '닉네임 변경하기',
     icon: 'https://cdn-icons-png.flaticon.com/128/747/747545.png',
     route:'/changepassword'
   },
@@ -52,6 +52,10 @@ const menus = [
     icon: 'https://cdn-icons-png.flaticon.com/128/1827/1827449.png',
     route:'/memo'
   },
+  {
+    label:'회원탈퇴',
+    
+  }
 ]
 const goTo = (menu: { route?: string }) => {
   if (menu.route) {
