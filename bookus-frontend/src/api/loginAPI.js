@@ -13,7 +13,7 @@ const LoginAPI = {
     return api.post(`${BASE_URL}/checknickname/`, {nickname});
   },
   updateNickname(nickname) {
-    return api.post(`${BASE_URL}/updatenickname/`, nickname);
+    return api.post(`${BASE_URL}/updatenickname/`, {nickname});
   },
 };
 

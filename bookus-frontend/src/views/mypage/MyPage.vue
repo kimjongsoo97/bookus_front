@@ -1,13 +1,10 @@
 <template>
   <div class="my-page">
-    <HeaderComponent title="마이 페이지" />
 
     <div class="profile">
-      <img class="avatar" src="https://via.placeholder.com/60x60.png?text=🙂" alt="profile" />
       <div class="info">
         <p class="name">{{ auth.nickname }}</p>
       </div>
-      <button class="edit-nickname">닉네임변경</button>
     </div>
 
     <ul class="menu-list">
@@ -28,14 +25,14 @@ import { useLoginStore } from '@/stores/login';
 import { useRouter,useRoute } from 'vue-router';
 
 const auth = useLoginStore();
-
+console.log(auth.nickname)
 const router=useRouter();
 const route=useRoute();
 const menus = [
   {
     label: '닉네임 변경하기',
     icon: 'https://cdn-icons-png.flaticon.com/128/747/747545.png',
-    route:'/changepassword'
+    route:'/mypage/changenickname'
   },
   {
     label: '내 모임',
@@ -54,6 +51,7 @@ const menus = [
   },
   {
     label:'회원탈퇴',
+    incon:'https://cdn-icons-png.flaticon.com/128/747/747545.png'
     
   }
 ]

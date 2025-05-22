@@ -18,5 +18,10 @@ export default [
     component:() => import('@/views/community/CommunityDetailPage.vue'),
     beforEnter:isAuthenticated
   },
+  {
+  path: '/community/update/:id',
+  name: 'CommunityUpdate',
+  component: () => import('@/views/community/CommunityUpdatePage.vue')
+}
 
 ]

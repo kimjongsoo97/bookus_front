@@ -14,10 +14,11 @@ export default[
         beforeEnter:isAuthenticated
 
     },
-    // {
-    //     path:'/message/detail/:id',
-    //     name:'MessageDetail',
-    //     component:()=> import('@/views/message/MessageDetailPage.vue')
-    // },
-
+    {
+        
+        path:'/mypage/changenickname',
+        name:'MyChangeNickname',
+        component:()=> import('@/views/mypage/ChangeNicknamePage.vue'),
+        beforeEnter:isAuthenticated
+    }
 ]

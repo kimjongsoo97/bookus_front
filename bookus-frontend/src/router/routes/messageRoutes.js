@@ -15,10 +15,10 @@ export default[
         beforeEnter:isAuthenticated
     },
     {
-  path: '/message/:id',
-  name: 'MessageDetail',
-  component: () => import('@/views/message/MessageDetailPage.vue') 
-}
+        path: '/message/:id',
+        name: 'MessageDetail',
+        component: () => import('@/views/message/MessageDetailPage.vue') 
+    }
 
 
 ]
