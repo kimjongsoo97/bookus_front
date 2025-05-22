@@ -1,19 +1,26 @@
 <template>
   <div class="container">
-    <HeaderComponent title="모임 생성 페이지"/>
+    <HeaderComponent title="모임 생성 페이지" />
 
     <!-- Form -->
     <div class="form-section">
       <!-- 모임 이름 -->
       <div class="form-group">
         <label>모임 이름</label>
-        <input type="text" v-model="form.name" placeholder="할 거 없으면 같이 책 읽자" />
+        <input
+          type="text"
+          v-model="form.name"
+          placeholder="모임 이름을 입력해주세요."
+        />
       </div>
 
       <!-- 모임 설명 -->
       <div class="form-group">
         <label>모임 설명</label>
-        <textarea v-model="form.description" placeholder="할 거 없으면 같이 책 읽자"></textarea>
+        <textarea
+          v-model="form.description"
+          placeholder="모임 설명을 입력해주세요."
+        ></textarea>
       </div>
 
       <!-- 책 선택 -->
@@ -22,7 +29,7 @@
           <!-- <img src="/icons/book-icon.png" alt="책 아이콘" class="icon" /> -->
           <div>
             <p class="label">책 선택</p>
-            <p class="value">{{ form.book || 'Choose Book' }}</p>
+            <p class="value">{{ form.book || "Choose Book" }}</p>
           </div>
         </div>
         <ChevronRightIcon class="chevron" />
@@ -34,7 +41,7 @@
           <!-- <img src="/icons/calendar-icon.png" alt="달력 아이콘" class="icon" /> -->
           <div>
             <p class="label">날짜 & 시간</p>
-            <p class="value">{{ form.datetime || 'Choose date and time' }}</p>
+            <p class="value">{{ form.datetime || "Choose date and time" }}</p>
           </div>
         </div>
         <ChevronRightIcon class="chevron" />
@@ -46,8 +53,8 @@
           <!-- <img src="/icons/location-icon.png" alt="위치 아이콘" class="icon" /> -->
           <div class="flex-grow">
             <p class="label">모임 장소</p>
-            <p class="value strong">{{ form.placeName || '오렌지 카페' }}</p>
-            <p class="value small">{{ form.place || '역삼역 222동 22번지' }}</p>
+            <p class="value strong">{{ form.placeName || "오렌지 카페" }}</p>
+            <p class="value small">{{ form.place || "역삼역 222동 22번지" }}</p>
             <button class="change-button" @click="changePlace">Change</button>
           </div>
           <ChevronRightIcon class="chevron" />
@@ -63,29 +70,29 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { ChevronRightIcon } from 'lucide-vue-next'
-import HeaderComponent from '@/components/common/HeaderComponent.vue'
-import MeetingAPI from '@/api/meetingAPI'
-
+import { ref } from "vue";
+import { ChevronRightIcon } from "lucide-vue-next";
+import HeaderComponent from "@/components/common/HeaderComponent.vue";
+import MeetingAPI from "@/api/meetingAPI";
+import DateTimePickerSheet from "@/components/common/DateTimePickerSheet.vue";
 
 const form = ref({
-  name: '',
-  description: '',
-  book: '',
-  datetime: '',
-  place: '',
-  placeName: '',
-})
+  name: "",
+  description: "",
+  book: "",
+  datetime: "",
+  place: "",
+  placeName: "",
+});
 
 const createGroup = () => {
-  console.log('모임 생성', form.value)
+  console.log("모임 생성", form.value);
   // TODO: 서버에 전송 로직 추가
-}
+};
 
 const changePlace = () => {
-  alert('장소 변경 기능은 추후 구현됩니다.')
-}
+  alert("장소 변경 기능은 추후 구현됩니다.");
+};
 </script>
 
 <style scoped>
