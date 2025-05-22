@@ -11,7 +11,7 @@
         :post="post"
       />
     </div>
-
+    <FloatingButton to="/community/create" />
     <!-- 하단 탭바 -->
     <BottomNav />
   </div>
@@ -23,6 +23,7 @@ import HeaderComponent from '@/components/common/HeaderComponent.vue'
 import BottomNav from '@/components/common/BottomNav.vue'
 import CommunityPostCard from '@/components/community/CommunityPostCard.vue'
 import CommunityAPI from '@/api/communityAPI' // ← 정확한 파일명 경로 확인
+import FloatingButton from '@/components/common/FloatingButton.vue'
 
 const posts = ref([])
 
