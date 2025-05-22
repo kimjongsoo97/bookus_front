@@ -2,23 +2,38 @@
   <div class="meeting-detail-page">
     <!-- 상단 헤더 -->
     <header class="header">
-      <button class="back-btn">←</button>
-      <h1>역삼동 책벌레 나와</h1>
+      <button class="back-btn" @click="$router.back()">←</button>
+      <h1>{{ meeting.name }}</h1>
       <button class="search-btn">🔍</button>
     </header>
 
     <!-- 스크롤 영역 -->
     <div class="scroll-container">
       <!-- 썸네일 이미지 -->
-      <!-- <img src="@/assets/thumbnail.png" class="thumbnail" alt="모임 이미지" /> -->
+      <!-- <img :src="meeting.thumbnail_url" class="thumbnail" alt="모임 이미지" /> -->
 
       <!-- 모임장 / 소개 -->
-      <section class="section">
-        <p class="label">모임장: <strong>역삼동책씨</strong></p>
-        <p class="desc">
-          20~30대 책벌레님들 같이 책읽고 의견도 공유해요! 😊
-        </p>
+      <section class="section" v-if="book.title">
+        <p class="label">📚 선정된 책</p>
+        <div class="book-info">
+          <img :src="book.img" alt="책 커버" class="book-cover" />
+        </div>
       </section>
+
+      <section class="section">
+        <p class="label">
+          모임장: <strong>{{ meeting.creator_nickname }}</strong>
+        </p>
+        <p class="desc">모임소개: {{ meeting.description }}</p>
+      </section>
+      <section class="section" v-if="isParticipant && meeting.members">
+        <p class="label">👥 참여 중인 멤버</p>  
+        <ul>
+          <li v-for="member in meeting.members" :key="member.id">
+            {{ member.user_nickname }}
+          </li>
+        </ul>
+    </section>
 
       <!-- AI 추천 멘트 -->
       <div class="ai-box">
@@ -29,31 +44,33 @@
       <!-- 장소 및 날짜 -->
       <section class="section">
         <p class="label">모임장소 및 날짜</p>
-        <!-- <img src="@/assets/map.png" class="map-img" /> -->
-        <p class="desc">📍 역삼역 222호 222번지 <br />🕒 5/12(월) 저녁 7시</p>
+        <!-- <img :src="meeting.map_image_url" class="map-img" /> -->
+        <p class="desc">
+          📍 {{ meeting.location }}<br />
+          🕒 {{ formatDate(meeting.meeting_date) }}
+        </p>
       </section>
 
-      <!-- 우리들만의 챌린지 -->
-      <section class="section">
-        <p class="label">우리들만의 챌린지 <span class="more">전체보기 ></span></p>
-        <div class="challenge-list">
-          <div class="challenge">
-            <span>5월<br />4</span>
-            <p>책을 읽었을 때 가장 먼저 떠오른 이미지를 말해주세요!</p>
-          </div>
-          <div class="challenge">
-            <span>5월<br />9</span>
-            <p>같이 독후감을 작성해볼까요? 한 줄평 환영!</p>
-          </div>
+
+    <!-- 우리들만의 챌린지 -->
+    <section class="section" v-if="contents.length">
+      <p class="label">
+        우리들만의 챌린지
+        <span class="more" @click="goToContentsPage">전체보기 ></span>
+      </p>
+      <div class="challenge-list">
+        <div class="challenge" v-for="(item, i) in contents.slice(0, 2)" :key="i" @click="goToDetail(item.id)">
+          <span>{{ item.month }}월<br />{{ item.day }}</span>
+          <p>{{ item.title }}</p>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- 추천 모임 -->
-      <section class="section">
+    <section class="section" v-if="!isParticipant">
+        추천 모임
         <p class="label">이런 모임도 추천해요</p>
         <ul class="recommend-list">
           <li class="recommend">
-            <!-- <img src="@/assets/book1.png" /> -->
             <div class="info">
               <strong>왕자 릴 사람</strong>
               <p>진심과 감정이 녹아있는...</p>
@@ -61,7 +78,6 @@
             <span class="due">D-17</span>
           </li>
           <li class="recommend">
-            <!-- <img src="@/assets/book2.png" /> -->
             <div class="info">
               <strong>온다온다 소년이 온다</strong>
               <p>6월 추천도서로 등록된 작품...</p>
@@ -69,28 +85,131 @@
             <span class="due">D-17</span>
           </li>
         </ul>
-        <button class="create-btn">모임 만들기</button>
+        <section v-if="!isParticipant" >
+          <strong>마음에 드는 모임이 없나요?</strong>
+          <p>모임을 직접 만들어 보세요</p>
+          <button class="create-btn" @click="goToCreatePage">모임 만들기</button>
+        </section>
       </section>
     </div>
 
     <!-- 고정 하단 버튼 -->
-    <footer class="bottom-fixed">
-      <button class="join-btn">모임 참여하기</button>
-    </footer>
+<footer class="bottom-fixed" v-if="!isParticipant">
+  <button class="join-btn" @click="joinMeeting">모임 참여하기</button>
+</footer>
+
   </div>
 </template>
 
-<script setup lang="ts">
-// 추후 데이터 연동 및 이동 로직 삽입 가능
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import MeetingAPI from '@/api/meetingAPI'
+import BookAPI from '@/api/bookAPI'
+import { useLoginStore } from '@/stores/login' // 실제 경로에 맞게 수정
+
+const loginStore = useLoginStore()
+const router = useRouter()
+const route = useRoute()
+
+const myUserId = loginStore.userId
+
+const meeting = ref({
+  name: '',
+  creator_nickname: '',
+  description: '',
+  meeting_date: '',
+  location: '',
+  book: '',
+  members: [], // 이 필드 중요
+})
+
+const book = ref({
+  title: '',
+  author: '',
+  img: '',
+})
+
+const contents = ref([]);
+
+// 참여 여부 확인
+const isParticipant = computed(() => {
+  return meeting.value.members?.some(member => member.user === myUserId)
+})
+
+const joinMeeting = async () => {
+  const id = route.params.id
+
+  try {
+    const response = await MeetingAPI.join(id)
+    if (response.data?.success) {
+      alert('모임에 성공적으로 참여하였습니다!')
+      router.go(0) // 새로고침
+    } else {
+      alert('참여에 실패했습니다. 다시 시도해주세요.')
+    }
+  } catch (error) {
+    if (error.response && error.response.data?.detail) {
+      alert(error.response.data.detail)
+    } else {
+      alert('알 수 없는 에러가 발생했습니다.')
+    }
+    console.error('참여 요청 실패:', error)
+  }
+}
+
+const goToContentsPage = () => {
+  router.push(`/meeting/detail/${route.params.id}/contents/`);
+}
+
+function goToDetail(contentId) {
+  const meetingId = route.params.meetingId || route.params.id
+  router.push(`/meeting/${meetingId}/contents/detail/${contentId}/`)
+}
+
+function formatDate(dateStr) {
+  const date = new Date(dateStr)
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
+}
+
+onMounted(async () => {
+  const id = route.params.id
+  try {
+    const res = await MeetingAPI.get(id)
+    meeting.value = res.data
+
+    if (meeting.value.book) {
+      const bookRes = await BookAPI.get(meeting.value.book)
+      book.value = bookRes.data
+    }
+
+    const contentRes = await MeetingAPI.getContents(id)
+    contents.value = (contentRes.data || []).map(item => {
+      const date = new Date(item.reveal_date)
+      return {
+        ...item,
+        month: date.getMonth() + 1,
+        day: date.getDate()
+      }
+    })
+  } catch (err) {
+    console.error('모임 상세 정보 조회 실패:', err)
+  }
+})
+
 </script>
 
 <style scoped>
+.content-item {
+  cursor: pointer;
+}
+
 .meeting-detail-page {
   width: 100vw;
   max-width: 375px;
   margin: 0 auto;
   background-color: #fff;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   display: flex;
   flex-direction: column;
   height: 100vh;

@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <button class="back-btn" @click="goBack">←</button>
-    <h1>{{ title }}</h1>
+    <h1 style="font-weight:normal;">{{ title }}</h1>
     <button class="search-btn">🔍</button>
   </div>
 </template>
@@ -15,12 +15,15 @@ const goBack = () => router.back()
 
 <style scoped>
 .header {
+  height: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 16px;
-  font-weight: bold;
-  border-bottom: 1px solid #eee;
+  padding: 16px 28px 10px;
+  font-size: 12px;
+  font-family: 'Pretendard', sans-serif;
+  /* font-weight: lighter; */
+  border-bottom: 10px solid #ffffff;
 }
 .back-btn,
 .search-btn {

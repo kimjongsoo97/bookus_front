@@ -2,29 +2,30 @@ import { isAuthenticated } from '@/util/guard'
 
 export default [
   {
-    path: '/content',
+    path: '/meeting/:meetingId/contents',
     name: 'Content',
-    component: () => import('@/views/content/ContentsPage.vue')
+    component: () => import('@/views/content/ContentsPage.vue'),
+    // 모임별 컨텐츠 리스트 페이지
   },
   {
-    path: '/content/create',
+    path: '/meeting/:meetingId/contents/create',
     name: 'CreateContent',
     component: () => import('@/views/content/CreateContentPage.vue'),
-    // beforeEnter:isAuthenticated
+    beforeEnter: isAuthenticated,  // 인증 가드 활성화 추천
   },
   {
-    path:'/content/quiz/:id',
-    name:'QuizDetail',
-    component:() => import('@/views/content/QuizDetailPage.vue')
+    path: '/meeting/:meetingId/contents/quiz/:id',
+    name: 'QuizDetail',
+    component: () => import('@/views/content/QuizDetailPage.vue'),
   },
   {
-    path:'/content/review/:id',
-    name:'ReviewDetail',
-    component:()=> import('@/views/content/ReviewDetailPage.vue')
+    path: '/meeting/:meetingId/contents/review/:id',
+    name: 'ReviewDetail',
+    component: () => import('@/views/content/ReviewDetailPage.vue'),
   },
   {
-    path:'/content/detail/:id',
-    name:'ContentDetail',
-    component:()=> import ('@/views/content/ContentDetailPage.vue')
-  }
+    path: '/meeting/:meetingId/contents/detail/:id',
+    name: 'ContentDetail',
+    component: () => import('@/views/content/ContentDetailPage.vue'),
+  },
 ]

@@ -66,6 +66,8 @@
 import { ref } from 'vue'
 import { ChevronRightIcon } from 'lucide-vue-next'
 import HeaderComponent from '@/components/common/HeaderComponent.vue'
+import MeetingAPI from '@/api/meetingAPI'
+
 
 const form = ref({
   name: '',
