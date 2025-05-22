@@ -26,8 +26,8 @@ const fetchMessages = async () => {
   try {
     const res =
       selectedTab.value === '받은 쪽지'
-        ? await MessageAPI.all() // 받은 쪽지
-        : await MessageAPI.send() // 보낸 쪽지
+        ? await MessageAPI.all()
+        : await MessageAPI.send()
     allMessages.value = res.data
   } catch (error) {
     console.error('쪽지 불러오기 실패:', error)
@@ -36,12 +36,10 @@ const fetchMessages = async () => {
   }
 }
 
-// 탭 변경될 때마다 호출
 watch(selectedTab, () => {
   fetchMessages()
 })
 
-// 최초 로딩 시 받은 쪽지 호출
 onMounted(() => {
   fetchMessages()
 })
@@ -53,20 +51,12 @@ const filteredMessages = computed(() =>
     preview: msg.content.slice(0, 30),
     sender: selectedTab.value === '받은 쪽지' ? msg.owner_nickname : msg.counterpart_nickname,
     date: new Date(msg.created_at).toLocaleDateString('ko-KR', {
-      month: 'long',
-      day: 'numeric'
+      year: '2-digit',
+      month: '2-digit',
+      day: '2-digit'
     }),
-    type: selectedTab.value === '받은 쪽지' ? 'received' : 'sent'
+    type: selectedTab.value === '받은 쪽지' ? 'received' : 'sent',
+    read_status: msg.read_status // ✅ 추가됨
   }))
 )
-const messageActions = [
-  {
-    label: '쪽지 보내기',
-    path: '/messages/send',
-    icon: '✉️',
-    color: '#00a1fd',
-  }
-]
 </script>
-
-    
