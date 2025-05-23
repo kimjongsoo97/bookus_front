@@ -10,6 +10,8 @@ import messageRoutes from './routes/messageRoutes'
 import mypageRoutes from './routes/mypageRoutes'
 import BookSplash from '@/views/BookSplash.vue'
 import HomeView from '@/views/HomeView.vue'
+import KakaoRedirectPage from '@/views/auth/KakaoRedirectPage.vue'
+import KakaoJoinPage from '@/views/auth/KakaoJoinPage.vue'
 
 const routes = [
   ...authRoutes,
@@ -34,7 +36,17 @@ const routes = [
     path:'/',
     name:'home',
     component:HomeView
-  }
+  },
+    {
+    path: '/auth/kakaojoin',
+    name: 'KakaoRedirect',
+    component: KakaoRedirectPage,
+  }, 
+   {
+    path: '/auth/kakaojoin',
+    name: 'KakaoJoin',
+    component: KakaoJoinPage
+  },
 ]
 
 

@@ -32,8 +32,10 @@
 
     <!-- 하단 버튼 -->
     <div class="bottom-action">
-      <button class="buy">구매하기</button>
-      <button class="save">찜하기</button>
+      <a :href="book.link" target="_blank" class="buy">구매하기</a>
+      <button class="save" :class="{ active: isFavorite }" @click="toggleFavorite">
+        {{ isFavorite ? '찜 취소' : '찜하기' }}
+      </button>
     </div>
 
     <!-- 하단 탭 -->
@@ -41,7 +43,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import BookAPI from '@/api/bookAPI'
@@ -58,9 +60,10 @@ const book = ref({
   author: '',
   img: '',
   content: '',
+  link: '',
 })
-
-const groups = ref([]) // 필요 시 연동 가능
+const groups = ref([]) // 관련 모임 데이터 (선택사항)
+const isFavorite = ref(false)
 
 const fetchBookDetail = async () => {
   try {
@@ -71,10 +74,34 @@ const fetchBookDetail = async () => {
   }
 }
 
+const checkFavorite = async () => {
+  try {
+    const res = await BookAPI.getFavorite()
+    isFavorite.value = res.data.some(fav => fav.book.id === Number(bookId))
+  } catch (err) {
+    console.error('찜 여부 확인 실패', err)
+  }
+}
+
+const toggleFavorite = async () => {
+  try {
+    if (isFavorite.value) {
+      await BookAPI.removeFavorite(bookId)
+    } else {
+      await BookAPI.addFavorite(bookId)
+    }
+    isFavorite.value = !isFavorite.value
+  } catch (err) {
+    console.error('찜 토글 실패', err)
+  }
+}
+
 onMounted(() => {
   fetchBookDetail()
+  checkFavorite()
 })
 </script>
+
 <style scoped>
 .book-detail-page {
   max-width: 375px;
@@ -84,6 +111,7 @@ onMounted(() => {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  padding-bottom: 60px;
 }
 .book-info {
   padding: 20px 16px 0;
@@ -156,5 +184,9 @@ onMounted(() => {
 .save {
   background: #f5f5f5;
   color: #333;
+}
+.save.active {
+  background: #ffefef;
+  color: #e60023;
 }
 </style>
