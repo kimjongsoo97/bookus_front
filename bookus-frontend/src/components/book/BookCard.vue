@@ -1,5 +1,5 @@
 <template>
-  <div class="book-card">
+  <div class="book-card" @click="goToDetail">
     <img
       v-if="book.img"
       :src="book.img"
@@ -14,6 +14,8 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
+
 const props = defineProps({
   book: {
     type: Object,
@@ -23,6 +25,10 @@ const props = defineProps({
 
 const onImageError = (event) => {
   event.target.src = 'https://via.placeholder.com/90x130?text=No+Image'
+}
+const router = useRouter()
+function goToDetail() {
+  router.push(`/books/detail/${props.book.id}`)  // ✅ URL 패턴은 프로젝트에 맞게
 }
 </script>
 
