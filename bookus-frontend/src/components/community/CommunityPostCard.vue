@@ -31,12 +31,12 @@ function getImageUrl(path) {
   return path.startsWith('http') ? path : `${BASE_URL}${path}`
 }
 
-// ✅ 게시글 상세 페이지 이동
+// 게시글 상세 페이지 이동
 function goToDetail() {
   router.push(`/community/detail/${props.post.id}`) // 혹은 props.post.bno 등 실제 키에 맞게!
 }
 
-// ✅ 쪽지 작성 페이지 이동
+// 쪽지 작성 페이지 이동
 function goToMessage() {
   router.push({
     path: '/message/create',

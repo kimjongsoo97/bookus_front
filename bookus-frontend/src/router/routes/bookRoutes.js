@@ -9,5 +9,9 @@ export default [
     name: 'detail',
     component: () => import('@/views/books/BookDetailPage.vue')
   },
-
+  {
+    path : '/books/search',
+    name:'bookSearch',
+    component:()=>import('@/views/books/BookSearch.vue')
+  }
 ]

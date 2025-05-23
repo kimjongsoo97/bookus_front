@@ -2,7 +2,7 @@
   <div class="header">
     <button class="back-btn" @click="goBack">←</button>
     <h1 style="font-weight:normal;">{{ title }}</h1>
-    <button class="search-btn">🔍</button>
+    <button class="search-btn" @click="goSearch">🔍</button>
   </div>
 </template>
 
@@ -11,6 +11,7 @@ import { useRouter } from 'vue-router'
 const props = defineProps({ title: String })
 const router = useRouter()
 const goBack = () => router.back()
+const goSearch=() => router.push('/books/search')
 </script>
 
 <style scoped>

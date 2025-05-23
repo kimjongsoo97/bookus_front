@@ -16,19 +16,20 @@
 <script setup>
 import { useRouter } from 'vue-router';
 
+
 const props = defineProps({
   book: {
     type: Object,
     required: true,
   },
 })
-const router=useRouter();
-const goToDetail=()=>{
-  router.push(`/books/detail/${props.book.id}`)
-}
 
 const onImageError = (event) => {
   event.target.src = 'https://via.placeholder.com/90x130?text=No+Image'
+}
+const router = useRouter()
+function goToDetail() {
+  router.push(`/books/detail/${props.book.id}`)  // ✅ URL 패턴은 프로젝트에 맞게
 }
 </script>
 
