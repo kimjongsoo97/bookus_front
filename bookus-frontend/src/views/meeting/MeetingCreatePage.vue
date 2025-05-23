@@ -24,7 +24,7 @@
       </div>
 
       <!-- 책 선택 -->
-      <div class="card clickable">
+      <div class="card clickable" @click="goToChooseBook">
         <div class="icon-text">
           <!-- <img src="/icons/book-icon.png" alt="책 아이콘" class="icon" /> -->
           <div>
@@ -36,12 +36,12 @@
       </div>
 
       <!-- 날짜 & 시간 -->
-      <div class="card clickable">
+      <div class="card clickable" @click="showDatePicker=true">
         <div class="icon-text">
           <!-- <img src="/icons/calendar-icon.png" alt="달력 아이콘" class="icon" /> -->
           <div>
             <p class="label">날짜 & 시간</p>
-            <p class="value">{{ form.datetime || "Choose date and time" }}</p>
+            <p class="value">{{ form.dueDate || "Choose date and time" }}</p>
           </div>
         </div>
         <ChevronRightIcon class="chevron" />
@@ -66,24 +66,66 @@
     <div class="submit-button">
       <button @click="createGroup">모임 생성</button>
     </div>
+    <DateTimePickerSheet
+      v-if="showDatePicker"
+      @select="onDateSelected"
+      @close="showDatePicker = false"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { ChevronRightIcon } from "lucide-vue-next";
 import HeaderComponent from "@/components/common/HeaderComponent.vue";
 import MeetingAPI from "@/api/meetingAPI";
+import BookAPI from "@/api/bookAPI";
 import DateTimePickerSheet from "@/components/common/DateTimePickerSheet.vue";
+import { useRoute, useRouter } from "vue-router";
+
 
 const form = ref({
   name: "",
   description: "",
   book: "",
-  datetime: "",
+  dueDate: "",
   place: "",
   placeName: "",
 });
+
+const router = useRouter();
+const route = useRoute()
+
+
+onMounted(() => {
+  const selectedBookId = route.query.book
+  if (selectedBookId) {
+    form.value.book = selectedBookId
+    console.log('선택된 책 ID:', selectedBookId)
+  }
+   const name = route.query.name
+  if (name) {
+    form.value.name = name
+  }
+   const description = route.query.name
+  if (description) {
+    form.value.description = description
+  }
+})
+
+
+const showDatePicker = ref(false)
+const onDateSelected = ({ date, time }) => {
+  // 날짜와 시간을 결합하여 form.datetime에 저장
+  form.value.dueDate = `${date} ${time}`;
+  showDatePicker.value = false; // 시트 닫기
+};
+
+const goToChooseBook = () => {
+  router.push({
+     name: 'ChooseBook' }); // name 확인 필요
+};
+
 
 const createGroup = () => {
   console.log("모임 생성", form.value);

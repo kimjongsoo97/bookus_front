@@ -7,9 +7,9 @@
       <div class="form-group">
         <label>컨텐츠 종류</label>
         <select v-model="type">
-          <option value="독후감">독후감</option>
-          <option value="토론">토론</option>
-          <option value="퀴즈">퀴즈</option>
+          <option value="BOOK_REVIEW">독후감</option>
+          <option value="DISCUSSION">토론</option>
+          <option value="QUIZ">퀴즈</option>
         </select>
       </div>
 
@@ -19,15 +19,14 @@
       </div>
 
       <div class="form-group">
-        <label>마감 날짜</label>
-        <select v-model="dueDate">
-          <option value="5/5 (월)">5/5 (월)</option>
-          <option value="5/6 (화)">5/6 (화)</option>
-        </select>
+        <label>마감 날짜 및 시간</label>
+        <div class="date-picker" @click="showDatePicker = true">
+          {{ formattedDueDate || '날짜 선택' }}
+        </div>
       </div>
 
       <!-- 조건부 입력 -->
-      <template v-if="type === '독후감'">
+      <template v-if="type === 'BOOK_REVIEW'">
         <div class="form-group">
           <label>컨텐츠 내용</label>
           <textarea v-model="content" placeholder="내용을 입력해주세요" />
@@ -35,7 +34,7 @@
 
         <div class="form-group">
           <label>글자수 제한</label>
-          <input type="number" v-model="charLimit" placeholder="예: 30" />
+          <input type="number" v-model.number="charLimit" placeholder="예: 30" />
         </div>
 
         <div class="form-group">
@@ -47,14 +46,14 @@
         </div>
       </template>
 
-      <template v-else-if="type === '토론'">
+      <template v-else-if="type === 'DISCUSSION'">
         <div class="form-group">
-          <label>컨텐츠 내용</label>
+          <label>토론 주제</label>
           <textarea v-model="content" placeholder="토론 주제를 입력해주세요" />
         </div>
       </template>
 
-      <template v-else-if="type === '퀴즈'">
+      <template v-else-if="type === 'QUIZ'">
         <div class="form-group">
           <label>정답 / 힌트</label>
           <input v-model="content" placeholder="정답: 힌트 예시" />
@@ -63,34 +62,110 @@
     </main>
 
     <footer class="footer">
-      <button class="create-btn" @click="createContent">생성하기</button>
+      <button class="create-btn" @click="createContentHandler">생성하기</button>
     </footer>
 
-    <BottomNav />
+    <DateTimePickerSheet
+      v-if="showDatePicker"
+      @select="onDateSelected"
+      @close="showDatePicker = false"
+    />
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
+<script>
+import { ref, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import HeaderComponent from '@/components/common/HeaderComponent.vue'
-import BottomNav from '@/components/common/BottomNav.vue'
+import DateTimePickerSheet from '@/components/common/DateTimePickerSheet.vue'
+import ContentAPI from '@/api/contentAPI' // 실제 경로로 수정
 
-const type = ref('독후감')
-const title = ref('')
-const dueDate = ref('')
-const content = ref('')
-const charLimit = ref(30)
-const chapter = ref('하루챕터')
+export default {
+  components: {
+    HeaderComponent,
+    DateTimePickerSheet,
+  },
+  setup() {
+    const route = useRoute()
+    const router = useRouter()
+    const meetingId = route.params.meetingId
 
-function createContent() {
-  console.log('생성된 컨텐츠:', {
-    type: type.value,
-    title: title.value,
-    dueDate: dueDate.value,
-    content: content.value,
-    charLimit: charLimit.value,
-    chapter: chapter.value
-  })
+    // Form state
+    const type = ref('')
+    const title = ref('')
+    const dueDate = ref('')
+    const content = ref('')
+    const charLimit = ref(30)
+    const chapter = ref('하루챕터')
+    const showDatePicker = ref(false)
+
+    const formattedDueDate = computed(() => {
+      if (!dueDate.value) return ''
+      const dateObj = new Date(dueDate.value)
+      return dateObj.toLocaleString()
+    })
+
+    function onDateSelected({ date, time }) {
+      dueDate.value = new Date(`${date}T${time}`).toISOString()
+      showDatePicker.value = false
+    }
+
+    function validateForm() {
+      if (!title.value.trim()) return '제목을 입력해주세요.'
+      if (!dueDate.value) return '마감 날짜를 선택해주세요.'
+      if (!content.value.trim()) return '내용을 입력해주세요.'
+
+      if (type.value === 'BOOK_REVIEW') {
+        if (!charLimit.value || charLimit.value <= 0) return '글자수 제한을 입력해주세요.'
+        if (!chapter.value) return '챕터를 선택해주세요.'
+      }
+
+      return null
+    }
+
+    async function createContentHandler() {
+      const error = validateForm()
+      if (error) {
+        alert(error)
+        return
+      }
+
+      const payload = {
+        title: title.value,
+        content_type: type.value,
+        reveal_date: dueDate.value,
+        body: content.value,
+      }
+
+      if (type.value === 'BOOK_REVIEW') {
+        payload.word_limit = charLimit.value
+        payload.order = chapter.value
+      }
+
+      try {
+        const res = await ContentAPI.createContent(meetingId, payload)
+        const newContentId = res.data.id
+        alert('컨텐츠가 성공적으로 생성되었습니다!')
+        router.push(`/meeting/detail/${meetingId}/contents/${newContentId}`)
+      } catch (err) {
+        console.error(err)
+        alert('컨텐츠 생성 중 오류가 발생했습니다.')
+      }
+    }
+
+    return {
+      type,
+      title,
+      dueDate,
+      content,
+      charLimit,
+      chapter,
+      showDatePicker,
+      formattedDueDate,
+      onDateSelected,
+      createContentHandler,
+    }
+  },
 }
 </script>
 
@@ -126,6 +201,13 @@ textarea {
   border-radius: 10px;
   border: 1px solid #ccc;
   box-sizing: border-box;
+}
+.date-picker {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  cursor: pointer;
 }
 .footer {
   padding: 12px 16px;

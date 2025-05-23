@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
   book: {
@@ -22,13 +22,12 @@ const props = defineProps({
     required: true,
   },
 })
-const router=useRouter();
-const goToDetail=()=>{
-  router.push(`/books/detail/${props.book.id}`)
-}
-
+const router=useRouter()
 const onImageError = (event) => {
   event.target.src = 'https://via.placeholder.com/90x130?text=No+Image'
+}
+function goToDetail(){
+  router.push(`/meeting/create/choosebook/detail/${props.book.id}`)
 }
 </script>
 
