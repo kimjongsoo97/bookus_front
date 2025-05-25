@@ -8,7 +8,12 @@
       <div class="form-group">
         <label>사진</label>
         <input type="file" @change="handleImageUpload" />
-        <img v-if="imgPreview" :src="imgPreview" alt="preview" class="preview-img" />
+        <img
+          v-if="imgPreview"
+          :src="imgPreview"
+          alt="preview"
+          class="preview-img"
+        />
       </div>
 
       <div class="form-group">
@@ -18,7 +23,11 @@
 
       <div class="form-group">
         <label>내용</label>
-        <textarea v-model="content" rows="5" placeholder="내용을 입력하세요"></textarea>
+        <textarea
+          v-model="content"
+          rows="5"
+          placeholder="내용을 입력하세요"
+        ></textarea>
       </div>
     </main>
 
@@ -33,59 +42,59 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import HeaderComponent from '@/components/common/HeaderComponent.vue'
-import BottomNav from '@/components/common/BottomNav.vue'
-import CommunityAPI from '@/api/communityAPI'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import HeaderComponent from "@/components/common/HeaderComponent.vue";
+import BottomNav from "@/components/common/BottomNav.vue";
+import CommunityAPI from "@/api/communityAPI";
 
-const router = useRouter()
+const router = useRouter();
 
-const title = ref('')
-const content = ref('')
-const imgFile = ref(null)      // 실제 파일
-const imgPreview = ref(null)   // 미리보기 용
+const title = ref("");
+const content = ref("");
+const imgFile = ref(null); // 실제 파일
+const imgPreview = ref(null); // 미리보기 용
 
 function handleImageUpload(event) {
-  const file = event.target.files?.[0]
+  const file = event.target.files?.[0];
   if (file) {
-    imgFile.value = file
+    imgFile.value = file;
 
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onload = (e) => {
-      imgPreview.value = e.target?.result
-    }
-    reader.readAsDataURL(file)
+      imgPreview.value = e.target?.result;
+    };
+    reader.readAsDataURL(file);
   }
 }
 
 async function submitPost() {
   if (!title.value || !content.value) {
-    alert('제목과 내용을 입력해주세요.')
-    return
+    alert("제목과 내용을 입력해주세요.");
+    return;
   }
 
-  const formData = new FormData()
-  formData.append('title', title.value)
-  formData.append('content', content.value)
+  const formData = new FormData();
+  formData.append("title", title.value);
+  formData.append("content", content.value);
   if (imgFile.value) {
-    formData.append('img', imgFile.value)
+    formData.append("img", imgFile.value);
   }
 
   try {
-    const res = await CommunityAPI.create(formData)
-    alert('커뮤니티 글 작성이 완료되었습니다.')
+    const res = await CommunityAPI.create(formData);
+    alert("커뮤니티 글 작성이 완료되었습니다.");
 
-    const newCommunityId = res.data.id
-    title.value = ''
-    content.value = ''
-    imgFile.value = null
-    imgPreview.value = ''
+    const newCommunityId = res.data.id;
+    title.value = "";
+    content.value = "";
+    imgFile.value = null;
+    imgPreview.value = "";
 
-    router.push(`/community/detail/${newCommunityId}`)
+    router.push(`/community/detail/${newCommunityId}`);
   } catch (err) {
-    console.error('커뮤니티 글 작성 실패:', err)
-    alert('글 작성 중 오류가 발생했습니다.')
+    console.error("커뮤니티 글 작성 실패:", err);
+    alert("글 작성 중 오류가 발생했습니다.");
   }
 }
 </script>
@@ -94,7 +103,7 @@ async function submitPost() {
 .community-create-page {
   max-width: 375px;
   margin: 0 auto;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   background: #fff;
   height: 100vh;
   display: flex;
