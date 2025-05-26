@@ -52,7 +52,7 @@ const answers = [
   max-width: 375px;
   margin: 0 auto;
   background: #fff;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', sans-serif;
   height: 100vh;
   display: flex;
   flex-direction: column;

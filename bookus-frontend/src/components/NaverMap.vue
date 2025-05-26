@@ -86,7 +86,7 @@ onMounted(async () => {
   max-width: 375px;
   margin: 0 auto;
   padding: 16px;
-  font-family: 'sans-serif';
+  font-family: 'Pretendard', sans-serif;
   background: #fff;
   display: flex;
   flex-direction: column;

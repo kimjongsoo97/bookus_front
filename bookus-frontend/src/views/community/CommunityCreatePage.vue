@@ -103,7 +103,7 @@ async function submitPost() {
 .community-create-page {
   max-width: 375px;
   margin: 0 auto;
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: 'Pretendard', sans-serif;
   background: #fff;
   height: 100vh;
   display: flex;

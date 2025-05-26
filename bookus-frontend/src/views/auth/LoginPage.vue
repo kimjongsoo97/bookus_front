@@ -75,7 +75,7 @@ const handleLogin = async () => {
   margin: 0 auto;
   padding: 24px;
   box-sizing: border-box;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', sans-serif;
   background-color: #fff;
 }
 

@@ -89,7 +89,7 @@ const router = useRouter();
   padding: 16px;
   padding-bottom: 80px;
   background-color: #fff;
-  font-family: sans-serif;
+  font-family: 'Pretendard', sans-serif;
 }
 
 .home-header {
