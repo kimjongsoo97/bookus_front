@@ -1,3 +1,4 @@
+import { isAuthenticated } from '@/util/guard'
 export default [
   {
     path: '/books',
@@ -13,5 +14,11 @@ export default [
     path : '/books/search',
     name:'bookSearch',
     component:()=>import('@/views/books/BookSearch.vue')
+  },
+  {
+    path:'/books/favorite',
+    name:'bookFavorite',
+    component:()=>import('@/views/books/BookFavoriteListPage.vue'),
+    beforeEnter:isAuthenticated
   }
 ]

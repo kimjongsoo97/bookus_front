@@ -1,7 +1,10 @@
 <template>
   <div class="community-page">
     <!-- 헤더 -->
+     <div class="header">
     <HeaderComponent title="커뮤니티" />
+
+     </div>
 
         <!-- 게시글 목록 -->
     <div class="post-list">
@@ -56,7 +59,9 @@ function goBack() {
   flex-direction: column;
   background: white;
 }
-
+.header{
+  border-bottom: 1px solid #f3f3f3;
+}
 .top-header {
   display: flex;
   align-items: center;

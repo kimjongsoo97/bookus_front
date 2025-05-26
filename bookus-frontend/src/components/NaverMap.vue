@@ -71,12 +71,7 @@ onMounted(async () => {
       map: map,
     })
 
-    if (props.title) {
-      const infoWindow = new naver.maps.InfoWindow({
-        content: `<div style="padding:8px;font-size:13px;">${props.title}</div>`,
-      })
-      infoWindow.open(map, marker)
-    }
+ 
   })
 })
 </script>

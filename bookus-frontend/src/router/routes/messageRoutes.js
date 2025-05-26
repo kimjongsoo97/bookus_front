@@ -17,7 +17,9 @@ export default[
     {
         path: '/message/:id',
         name: 'MessageDetail',
-        component: () => import('@/views/message/MessageDetailPage.vue') 
+        component: () => import('@/views/message/MessageDetailPage.vue'),
+        beforeEnter:isAuthenticated    
+
     }
 
 

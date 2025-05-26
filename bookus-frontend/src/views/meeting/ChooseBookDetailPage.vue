@@ -1,7 +1,10 @@
 <template>
   <div class="book-detail-page">
     <!-- 헤더 -->
-    <HeaderComponent title="책 상세 페이지" />
+     <div class="header">
+
+       <HeaderComponent title="책 상세 페이지" />
+     </div>
 
     <!-- 책 정보 -->
     <div class="book-info">
@@ -111,6 +114,9 @@ onMounted(() => {
   font-size: 14px;
   color: #555;
   margin-bottom: 10px;
+}
+.header{
+  border-bottom: 1px solid #f3f3f3;
 }
 .desc {
   font-size: 13px;

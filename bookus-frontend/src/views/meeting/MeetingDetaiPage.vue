@@ -1,12 +1,6 @@
 <template>
   <div class="meeting-detail-page">
-    <!-- 상단 헤더 -->
-    <header class="header">
-      <button class="back-btn" @click="$router.back()">←</button>
-      <h1>{{ meeting.name }}</h1>
-      <button class="search-btn">🔍</button>
-    </header>
-
+    <HeaderComponent title="모임 상세 페이지"/>
     <!-- 스크롤 영역 -->
     <div class="scroll-container">
       <!-- 썸네일 이미지 -->
@@ -14,7 +8,6 @@
 
       <!-- 모임장 / 소개 -->
       <section class="section" v-if="book.title">
-        <p class="label">📚 선정된 책</p>
         <div class="book-info">
           <img :src="book.img" alt="책 커버" class="book-cover" />
         </div>
@@ -45,18 +38,18 @@
       <section class="section">
         <p class="label">모임장소 및 날짜</p>
         <!-- <img :src="meeting.map_image_url" class="map-img" /> -->
-<!-- 상위 컴포넌트에서 조건 추가 -->
-<NaverMap
-  v-if="meeting.map_directions && meeting.map_directions.x && meeting.map_directions.y"
-  :lat="Number(meeting.map_directions.y)"
-  :lng="Number(meeting.map_directions.x)"
-  :title="meeting.map_directions.title"
-/>
-<p class="desc">
-  📍 {{ meeting.map_directions?.title || "모임 장소 미정" }}<br />
-  📌 {{ meeting.map_directions?.address || meeting.location || "주소 정보 없음" }}<br />
-  🕒 {{ formatDate(meeting.meeting_date) }}
-</p>
+          <!-- 상위 컴포넌트에서 조건 추가 -->
+          <NaverMap
+            v-if="meeting.map_directions && meeting.map_directions.x && meeting.map_directions.y"
+            :lat="Number(meeting.map_directions.y)"
+            :lng="Number(meeting.map_directions.x)"
+            :title="meeting.map_directions.title"
+          />
+          <p class="desc">
+            📍 {{ meeting.map_directions?.title || "모임 장소 미정" }}<br />
+            📌 {{ meeting.map_directions?.address || meeting.location || "주소 정보 없음" }}<br />
+            🕒 {{ formatDate(meeting.meeting_date) }}
+          </p>
 
       </section>
 
@@ -120,15 +113,28 @@
           <button class="create-btn" @click="goToCreate">모임 만들기</button>
         </section>
       </section>
-    </div>
-    <button v-if="isParticipant && meeting.members" @click="withdrawMeeting">
-      탈퇴하기
-    </button>
+      <div class="page-content">
+  <!-- 모임 정보 영역 -->
+
+  <button
+    v-if="isParticipant && meeting.members"
+    class="leave-btn"
+    @click="withdrawMeeting"
+  >
+    탈퇴하기
+  </button>
+</div>
     <!-- 고정 하단 버튼 -->
     <footer class="bottom-fixed" v-if="!isParticipant">
       <button class="join-btn" @click="joinMeeting">모임 참여하기</button>
     </footer>
+    </div>
+
+<!-- 탈퇴 버튼 -->
+
+  <BottomNav/>
   </div>
+  
 </template>
 
 <script setup>
@@ -139,6 +145,8 @@ import BookAPI from "@/api/bookAPI";
 import { useLoginStore } from "@/stores/login"; // 실제 경로에 맞게 수정
 import MeetingCreatePage from "./MeetingCreatePage.vue";
 import NaverMap from "@/components/NaverMap.vue";
+import HeaderComponent from "@/components/common/HeaderComponent.vue";
+import BottomNav from "@/components/common/BottomNav.vue";
 const loginStore = useLoginStore();
 const router = useRouter();
 const route = useRoute();
@@ -302,6 +310,7 @@ onMounted(async () => {
   height: 100vh;
   box-sizing: border-box;
   position: relative;
+  padding-bottom:60px ;
 }
 
 .header {
@@ -327,7 +336,20 @@ onMounted(async () => {
   overflow-y: auto;
   padding: 16px;
 }
+.book-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+  border-bottom: 1px solid #d9d9d9;
+}
 
+.book-cover {
+  width: 100px;
+  height: auto;
+  border-radius: 8px;
+   padding-bottom: 16px; 
+}
 .thumbnail {
   width: 100%;
   border-radius: 8px;
@@ -336,12 +358,15 @@ onMounted(async () => {
 
 .section {
   margin-bottom: 24px;
+  
+  /* border-bottom: 1px solid #d9d9d9; */
 }
 
 .label {
   font-weight: bold;
   font-size: 14px;
   margin-bottom: 6px;
+  align-items: center;
 }
 
 .more {
@@ -451,4 +476,23 @@ onMounted(async () => {
   border: none;
   border-radius: 12px;
 }
+.leave-btn {
+  width: 100%;
+  padding: 12px 0;
+  background-color: #f44336; /* 빨간 계열 */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background-color 0.3s ease;
+  margin-top: -5;
+}
+
+.leave-btn:hover {  
+  background-color: #d32f2f;
+}
+
 </style>

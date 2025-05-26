@@ -1,6 +1,9 @@
 <template>
   <div class="community-detail-page">
-    <HeaderComponent :title="community.title " />
+    <div class="header">
+
+      <HeaderComponent :title="community.title " />
+    </div>
 
     <div class="content-box">
       <!-- 제목 -->
@@ -123,7 +126,9 @@ function goToMessage() {
   font-size: 13px;
   color: #666;
 }
-
+.header{
+  border-bottom: 1px solid #f3f3f3;
+}
 .author-name {
   font-size: 13px;
   color: #000;

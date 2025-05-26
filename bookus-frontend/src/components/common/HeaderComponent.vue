@@ -24,7 +24,8 @@ const goSearch=() => router.push('/books/search')
   font-size: 12px;
   font-family: 'Pretendard', sans-serif;
   /* font-weight: lighter; */
-  border-bottom: 10px solid #ffffff;
+  /* border-bottom: 1px solid #d9d9d9; */
+  
 }
 .back-btn,
 .search-btn {

@@ -1,16 +1,26 @@
 <template>
   <div class="overlay" @click.self="close">
     <div class="sheet">
-      <h3>날짜 및 시간 선택</h3>
-      <input type="date" v-model="date" />
-      <input type="time" v-model="time" />
+      <div class="sheet-header">
+        <h3>모임 날짜와 시간</h3>
+      </div>
+
+      <div class="sheet-body">
+        <label class="input-label">📅 날짜</label>
+        <input type="date" v-model="date" />
+
+        <label class="input-label">⏰ 시간</label>
+        <input type="time" v-model="time" />
+      </div>
+
       <div class="actions">
-        <button @click="confirm">확인</button>
-        <button @click="close">닫기</button>
+        <button class="confirm-btn" @click="confirm">확인</button>
+        <button class="cancel-btn" @click="close">닫기</button>
       </div>
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -44,37 +54,78 @@ function close() {
 }
 
 .sheet {
-  background: white;
+  background: #fff;
   width: 100%;
   max-width: 375px;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  padding: 16px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding: 24px 20px;
   box-sizing: border-box;
+  font-family: 'Pretendard', sans-serif;
+  animation: slide-up 0.3s ease;
 }
 
-input {
+.sheet-header h3 {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.input-label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
   display: block;
+  color: #333;
+}
+
+input[type="date"],
+input[type="time"] {
   width: 100%;
-  margin: 12px 0;
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 
 .actions {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-button {
-  flex: 1;
+.confirm-btn {
   padding: 12px;
-  margin: 0 6px;
-  font-size: 16px;
   background-color: #00a3ff;
   color: white;
+  font-size: 16px;
+  font-weight: bold;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
 }
+
+.cancel-btn {
+  padding: 12px;
+  background-color: #f3f3f3;
+  color: #333;
+  font-size: 15px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 </style>

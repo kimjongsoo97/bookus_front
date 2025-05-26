@@ -106,7 +106,7 @@ const submitMemo = async () => {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-    font-family: 'Pretendard', sans-serif;
+  font-family: 'Pretendard', sans-serif;
 
 }
 
