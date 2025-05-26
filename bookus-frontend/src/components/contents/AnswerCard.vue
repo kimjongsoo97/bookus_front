@@ -14,14 +14,32 @@
 </template>
 
 <script setup>
-import axios from "axios";
+import ContentAPI from "@/api/contentAPI";
 import { useLoginStore } from "@/stores/login";
 import { computed } from "vue";
+import { useRoute } from "vue-router";
 
+
+const route=useRoute()
+// Props 정의
 const props = defineProps({
-  answer: Object,
-  contentId: Number,
-  meetingId: Number,
+  answer: {
+    type: Object,
+    required: true,
+  },
+  contentId: {
+    type: Number,
+    required: true,
+  },
+  meetingId: {
+    type: Number,
+    required: true,
+  },
+  type: {
+    type: String,
+    required: true,
+    validator: (value) => ["DISCUSSION", "QUIZ", "BOOK_REVIEW"].includes(value),
+  },
 });
 
 const emit = defineEmits(["deleted"]);
@@ -39,34 +57,38 @@ function formatDate(dateString) {
   return new Date(dateString).toLocaleDateString("ko-KR", options);
 }
 
+
+
 // 삭제 요청
 async function deleteAnswer() {
   if (!confirm("정말 삭제하시겠습니까?")) return;
 
   try {
-    const typeLower = props.type.toLowerCase();
-    const replyId = props.answer.id; // 답글 ID
+    const meetingId = route.params.meetingId || route.params.meeting_id;
+    const contentId = route.params.id || route.params.contentId;
+    const typeLower = props.type.toLowerCase(); // 대문자(DISCUSSION) → 소문자(discussion)
+    const replyId = props.answer.id;
 
     let response;
     switch (typeLower) {
       case "discussion":
         response = await ContentAPI.deleteDiscussionReply(
-          props.meetingId,
-          props.contentId,
+          meetingId,
+          contentId,
           replyId
         );
         break;
       case "quiz":
         response = await ContentAPI.deleteQuizReply(
-          props.meetingId,
-          props.contentId,
+          meetingId,
+          contentId,
           replyId
         );
         break;
       case "book_review":
         response = await ContentAPI.deleteBookReview(
-          props.meetingId,
-          props.contentId,
+          meetingId,
+          contentId,
           replyId
         );
         break;
@@ -78,11 +100,10 @@ async function deleteAnswer() {
     emit("deleted", replyId); // 삭제된 답글 ID를 부모에게 알림
   } catch (err) {
     console.error("삭제 실패:", err);
-    alert("삭제에 실패했습니다.");
+    alert(err.response?.data?.detail || "삭제에 실패했습니다.");
   }
 }
 </script>
-
 <style scoped>
 .answer-card {
   padding: 12px;

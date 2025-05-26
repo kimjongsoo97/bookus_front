@@ -54,7 +54,7 @@ const ContentAPI = {
   // 퀴즈 답글 삭제
   deleteQuizReply(meetingId, contentId, replyId) {
     return api.delete(
-      `${BASE_URL}/detail/${meetingId}/contents/${contentId}/quiz/replies/delete/`
+      `${BASE_URL}/detail/${meetingId}/contents/${contentId}/quiz/replies/delete/${replyId}/`
     );
   },
 
@@ -67,9 +67,9 @@ const ContentAPI = {
   },
 
   // 독후감 삭제
-  deleteBookReview(meetingId, contentId, reviewId) {
+  deleteBookReview(meetingId, contentId, replyId) {
     return api.delete(
-      `${BASE_URL}/detail/${meetingId}/contents/${contentId}/book-review/delete/${reviewId}/`
+      `${BASE_URL}/detail/${meetingId}/contents/${contentId}/book-review/delete/${replyId}/`
     );
   },
 

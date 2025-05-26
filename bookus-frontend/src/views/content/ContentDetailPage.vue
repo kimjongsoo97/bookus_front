@@ -40,8 +40,8 @@
         v-for="a in answers"
         :key="a.id"
         :answer="a"
-        :content-id="contentId"
-        :meeting-id="meetingId"
+        :content_id="contentId"
+        :meeting_id="meetingId"
         :type="content.type"
         @deleted="handleDeleted"
       />
@@ -66,6 +66,7 @@ const content = ref({
   type: "",
   title: "",
   body: "",
+
 });
 const answers = ref([]);
 const newReply = ref("");

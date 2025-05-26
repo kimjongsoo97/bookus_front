@@ -20,6 +20,9 @@ const BookAPI = {
   },
   removeFavorite(bookId) {
     return api.delete(`${BASE_URL}/favorite/`, { data: { book_id: bookId } });
+  },
+  allRandom(){
+    return api.get(`${BASE_URL}/random/`)
   }
 };
 
