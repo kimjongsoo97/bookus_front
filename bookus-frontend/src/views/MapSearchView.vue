@@ -6,12 +6,12 @@
 </template>
 
 <script>
-import NaverMap from '@/components/NaverMap.vue'
+import NaverMapSearch from '@/components/NaverMapSearch.vue';
 
 export default {
-  name: 'MapView',
+  name: 'MapSearchView',
   components: {
-    NaverMap,
+    NaverMapSearch,
   },
 }
 

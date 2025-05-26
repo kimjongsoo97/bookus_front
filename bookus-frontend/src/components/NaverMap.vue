@@ -1,120 +1,57 @@
 <template>
   <div class="place-setting-page">
-    <div class="header">장소 설정 페이지</div>
-
     <div id="map" class="map-container"></div>
 
-    <div class="place-info">
-      <div class="label">상세주소</div>
-      <div class="place-name">{{ selectedPlace?.title || '장소를 검색하세요' }}</div>
-      <div class="place-address">{{ selectedPlace?.address }}</div>
     </div>
-
-    <div class="search-box">
-      <input
-        v-model="keyword"
-        @keydown.enter="searchPlace"
-        placeholder="장소를 입력하세요"
-        class="search-input"
-      />
-      <button @click="searchPlace" class="search-button">검색</button>
-    </div>
-
-    <button class="register-button" @click="registerPlace">장소등록</button>
-  </div>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { onMounted, nextTick } from 'vue'
 
-const map = ref(null)
-const marker = ref(null)
-const infoWindow = ref(null)
-const keyword = ref('')
-const selectedPlace = ref(null)
+const props = defineProps({
+  lat: {
+    type: Number,
+    required: true,
+  },
+  lng: {
+    type: Number,
+    required: true,
+  },
+  title: {
+    type: String,
+    default: '',
+  },
+})
+
+let map = null
+let marker = null
 
 onMounted(async () => {
   await nextTick()
 
-  if (window.naver && window.naver.maps) {
-    map.value = new naver.maps.Map('map', {
-      center: new naver.maps.LatLng(37.5665, 126.9780), // 서울
-      zoom: 13,
+  const mapContainer = document.getElementById('map')
+
+  if (window.naver && window.naver.maps && props.lat && props.lng && mapContainer) {
+    const position = new naver.maps.LatLng(props.lat, props.lng)
+
+    map = new naver.maps.Map(mapContainer, {
+      center: position,
+      zoom: 15,
     })
+
+    marker = new naver.maps.Marker({
+      position,
+      map: map,
+    })
+
+ 
   } else {
-    console.error('네이버 지도 스크립트가 로드되지 않았습니다.')
+    console.error()
   }
 })
-
-async function searchPlace() {
-  if (!keyword.value) {
-    alert('검색어를 입력해주세요.')
-    return
-  }
-
-  try {
-    const res = await fetch(`http://localhost:8000/api/v1/meeting/naver/search/?query=${encodeURIComponent(keyword.value)}`)
-    const data = await res.json()
-
-    if (!data.items || data.items.length === 0) {
-      alert('장소를 찾을 수 없습니다.')
-      return
-    }
-
-    const item = data.items[0]
-
-    const lng = parseFloat(item.mapx) / 10000000
-    const lat = parseFloat(item.mapy) / 10000000
-    const latlng = new window.naver.maps.LatLng(lat, lng)
-
-    map.value.setCenter(latlng)
-    map.value.setZoom(15)
-
-    if (!marker.value) {
-      marker.value = new window.naver.maps.Marker({
-        position: latlng,
-        map: map.value,
-      })
-    } else {
-      marker.value.setPosition(latlng)
-      marker.value.setMap(map.value)
-    }
-
-    const cleanTitle = item.title.replace(/<[^>]*>?/g, '')
-
-    // if (!infoWindow.value) {
-    //   infoWindow.value = new window.naver.maps.InfoWindow({
-    //     content: `<div style="padding:8px;font-size:13px;">${cleanTitle}</div>`,
-    //   })
-    // } else {
-    //   infoWindow.value.setContent(`<div style="padding:8px;font-size:13px;">${cleanTitle}</div>`)
-    // }
-
-    // infoWindow.value.open(map.value, marker.value)
-
-    selectedPlace.value = {
-      title: cleanTitle,
-      address: item.address,
-      x: lng,
-      y: lat,
-    }
-
-  } catch (err) {
-    console.error('검색 실패:', err)
-    alert('장소 검색 중 오류가 발생했습니다.')
-  }
-}
-
-function registerPlace() {
-  if (!selectedPlace.value) {
-    alert('먼저 장소를 검색해주세요.')
-    return
-  }
-
-  console.log('등록할 장소 정보:', selectedPlace.value)
-  alert(`'${selectedPlace.value.title}' 장소가 등록되었습니다.`)
-}
 </script>
+
+
 
 <style scoped>
 .place-setting-page {
@@ -123,7 +60,7 @@ function registerPlace() {
   padding: 16px;
   font-family: 'sans-serif';
   background: #fff;
-  min-height: 100vh;
+  min-height: 50;
   display: flex;
   flex-direction: column;
 }

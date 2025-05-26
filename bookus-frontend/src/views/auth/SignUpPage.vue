@@ -68,7 +68,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup >
 import LoginAPI from '@/api/loginAPI';
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -148,7 +148,7 @@ const handleSubmit = async () => {
     await LoginAPI.register(payload);
     alert('회원가입이 완료되었습니다!');
     router.push('/welcome');
-  } catch (err: any) {
+  } catch (err) {
     console.error(err);
     console.error("회원가입 실패 응답:", err.response.data); 
     errorMessage.value = err?.response?.data?.message || '회원가입에 실패했습니다.';

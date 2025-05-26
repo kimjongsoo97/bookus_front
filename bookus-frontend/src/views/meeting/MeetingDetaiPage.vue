@@ -45,10 +45,17 @@
       <section class="section">
         <p class="label">모임장소 및 날짜</p>
         <!-- <img :src="meeting.map_image_url" class="map-img" /> -->
-        <p class="desc">
-          📍 {{ meeting.location }}<br />
-          🕒 {{ formatDate(meeting.meeting_date) }}
-        </p>
+         <NaverMap
+  :lat="Number(meeting.map_directions.y)"
+  :lng="Number(meeting.map_directions.x)"
+  :title="meeting.map_directions.title"
+/>
+<p class="desc">
+  📍 {{ meeting.map_directions?.title || "모임 장소 미정" }}<br />
+  📌 {{ meeting.map_directions?.address || meeting.location || "주소 정보 없음" }}<br />
+  🕒 {{ formatDate(meeting.meeting_date) }}
+</p>
+
       </section>
 
       <!-- 우리들만의 챌린지 -->
@@ -129,7 +136,7 @@ import MeetingAPI from "@/api/meetingAPI";
 import BookAPI from "@/api/bookAPI";
 import { useLoginStore } from "@/stores/login"; // 실제 경로에 맞게 수정
 import MeetingCreatePage from "./MeetingCreatePage.vue";
-
+import NaverMap from "@/components/NaverMap.vue";
 const loginStore = useLoginStore();
 const router = useRouter();
 const route = useRoute();
@@ -141,9 +148,15 @@ const meeting = ref({
   creator_nickname: "",
   description: "",
   meeting_date: "",
-  location: "",
+  location: "", // fallback용
   book: "",
-  members: [], // 이 필드 중요
+  members: [],
+  map_directions: {
+    title: "",
+    address: "",
+    x: "",
+    y: "",
+  }
 });
 
 const book = ref({
@@ -231,10 +244,26 @@ function formatDate(dateStr) {
 
 onMounted(async () => {
   const id = route.params.id;
+  console.log(meeting.map_directions)
   try {
     const res = await MeetingAPI.get(id);
     meeting.value = res.data;
+        // ✅ map_directions가 문자열이면 파싱
+    if (typeof meeting.value.map_directions === 'string') {
+      try {
+        meeting.value.map_directions = JSON.parse(meeting.value.map_directions);
+      } catch (e) {
+        console.warn('map_directions 파싱 실패:', e);
+        meeting.value.map_directions = {
+          title: '',
+          address: '',
+          x: '',
+          y: '',
+        };
+      }
+    }
 
+    console.log("📍 좌표 확인", meeting.value.map_directions); // 이제 y 출력됨
     if (meeting.value.book) {
       const bookRes = await BookAPI.get(meeting.value.book);
       book.value = bookRes.data;

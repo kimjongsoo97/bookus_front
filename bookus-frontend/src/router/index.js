@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import MapView from '../views/MapView.vue'
 import authRoutes from './routes/authRoutes'
 import bookRoutes from './routes/bookRoutes'
 import communityRoutes from './routes/communityRoutes'
@@ -12,6 +11,7 @@ import BookSplash from '@/views/BookSplash.vue'
 import HomeView from '@/views/HomeView.vue'
 import KakaoRedirectPage from '@/views/auth/KakaoRedirectPage.vue'
 import KakaoJoinPage from '@/views/auth/KakaoJoinPage.vue'
+import MapSearchView from '@/views/MapSearchView.vue'
 
 const routes = [
   ...authRoutes,
@@ -30,7 +30,7 @@ const routes = [
   {
     path: '/maps',
     name: 'maps',
-    component: MapView
+    component: MapSearchView
   },
   {
     path:'/',

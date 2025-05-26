@@ -76,10 +76,10 @@
       <div class="card">
         <div class="icon-text">
           <!-- <img src="/icons/location-icon.png" alt="위치 아이콘" class="icon" /> -->
-          <div class="flex-grow">
+          <div class="flex-grow" @click="goNaverMap">
             <p class="label">모임 장소</p>
-            <p class="value strong">{{ form.placeName || "오렌지 카페" }}</p>
-            <p class="value small">{{ form.place || "역삼역 222동 22번지" }}</p>
+           <p class="value strong">{{ form.map_directions.title || "오렌지 카페" }}</p>
+<p class="value small">{{ form.map_directions.address || "역삼역 222동 22번지" }}</p>
             <button class="change-button" @click="changePlace">Change</button>
           </div>
           <ChevronRightIcon class="chevron" />
@@ -128,36 +128,53 @@ const router = useRouter();
 const route = useRoute();
 
 const bookDetail = ref(null);
-
+const goNaverMap=()=>{
+  router.push('/maps')
+}
 onMounted(async () => {
+  const { placeName, placeAddress, x, y } = route.query;
+
+  const hasPlaceQuery = placeName && placeAddress && x && y;
   const saved = localStorage.getItem("meetingForm");
+
   if (saved) {
     const parsed = JSON.parse(saved);
     form.value = {
-      ...form.value, // 기본값
-      ...parsed, // 저장된 값으로 덮어쓰기
+      ...form.value,
+      ...parsed,
+    };
+
+    // ✅ map_directions는 query가 없을 때만 반영 (query 우선 유지)
+    if (!hasPlaceQuery && parsed.map_directions) {
+      form.value.map_directions = parsed.map_directions;
+    }
+  }
+
+  // ✅ query가 있으면 최종적으로 덮어씌움
+  if (hasPlaceQuery) {
+    form.value.map_directions = {
+      title: placeName,
+      address: placeAddress,
+      x,
+      y,
     };
   }
 
+  // 책 ID로 책 정보 불러오기
   const selectedBookId = route.query.book;
   if (selectedBookId) {
     form.value.book = selectedBookId;
     try {
-      const response = await BookAPI.get(selectedBookId); // ✅ 이제 정상 작동
+      const response = await BookAPI.get(selectedBookId);
       bookDetail.value = response.data;
     } catch (error) {
       console.error("책 정보 불러오기 실패:", error);
     }
   }
 
-  const name = route.query.name;
-  if (name) {
-    form.value.name = name;
-  }
-  const description = route.query.description;
-  if (description) {
-    form.value.description = description;
-  }
+  // 나머지 쿼리도 반영
+  if (route.query.name) form.value.name = route.query.name;
+  if (route.query.description) form.value.description = route.query.description;
 });
 
 const showDatePicker = ref(false);
