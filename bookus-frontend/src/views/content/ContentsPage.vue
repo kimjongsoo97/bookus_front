@@ -158,6 +158,8 @@ const handleCreate = () => {
 .contents-page {
   position: relative;
   padding-bottom: 120px; /* BottomNav + 버튼 공간 확보 */
+  font-family: 'Pretendard', sans-serif;
+
 }
 
 .create-btn {

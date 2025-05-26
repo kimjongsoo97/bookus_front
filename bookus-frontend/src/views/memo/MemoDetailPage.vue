@@ -153,6 +153,8 @@ const stopRecording = () => {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  font-family: 'Pretendard', sans-serif;
+
 }
 
 .memo-detail {

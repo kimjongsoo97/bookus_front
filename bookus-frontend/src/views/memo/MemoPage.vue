@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <HeaderComponent title="메모" />
     <MemoList :memos="memoList" @click-memo="goToDetail" />
     <BottomNav />
@@ -32,3 +32,9 @@ const goToDetail = (memoId) => {
   router.push(`/memo/detail/${memoId}`)
 }
 </script>
+<style>
+.container{
+  font-family: 'Pretendard', sans-serif;
+
+}
+</style>

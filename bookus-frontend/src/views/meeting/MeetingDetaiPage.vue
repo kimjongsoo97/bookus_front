@@ -296,7 +296,7 @@ onMounted(async () => {
   max-width: 375px;
   margin: 0 auto;
   background-color: #fff;
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: 'Pretendard', sans-serif;
   display: flex;
   flex-direction: column;
   height: 100vh;

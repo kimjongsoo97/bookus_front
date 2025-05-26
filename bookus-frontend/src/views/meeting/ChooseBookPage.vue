@@ -92,7 +92,7 @@ const filteredBooks = computed(() => {
   width: 100%;
   max-width: 375px;
   margin: 0 auto;
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: 'Pretendard', sans-serif;
   display: flex;
   flex-direction: column;
   height: 100vh;

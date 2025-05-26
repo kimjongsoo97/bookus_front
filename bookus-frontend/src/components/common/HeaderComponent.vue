@@ -1,8 +1,8 @@
 <template>
   <div class="header">
-    <button class="back-btn" @click="goBack">←</button>
+    <button class="back-btn" @click="goBack"><i class="fa-solid fa-arrow-left"></i></button>
     <h1 style="font-weight:normal;">{{ title }}</h1>
-    <button class="search-btn" @click="goSearch">🔍</button>
+    <button class="search-btn" @click="goSearch"><i class="fa-brands fa-sistrix"></i></button>
   </div>
 </template>
 

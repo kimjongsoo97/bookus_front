@@ -227,6 +227,8 @@ const changePlace = () => {
   background-color: #fff;
   min-height: 100vh;
   box-sizing: border-box;
+    font-family: 'Pretendard', sans-serif;
+
 }
 
 .form-section {

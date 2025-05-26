@@ -80,7 +80,7 @@ function kakaoLogin() {
   width: 100vw;
   height: 100vh;
   background-color: #fff;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', sans-serif;
   color: #222;
   display: flex;
   flex-direction: column;

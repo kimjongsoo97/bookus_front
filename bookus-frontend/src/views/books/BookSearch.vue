@@ -69,6 +69,8 @@ const goToDetail=(bookId)=>{
   background-color: white;
   min-height: 100vh;
   box-sizing: border-box;
+    font-family: 'Pretendard', sans-serif;
+
 }
 
 .search-wrapper {

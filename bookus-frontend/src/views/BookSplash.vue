@@ -22,7 +22,7 @@
   justify-content: center;
   position: relative;
   color: white;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', sans-serif;
   overflow: hidden;
 }
 

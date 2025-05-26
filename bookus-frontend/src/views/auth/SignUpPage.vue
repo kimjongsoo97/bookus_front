@@ -164,7 +164,7 @@ const handleSubmit = async () => {
   max-width: 375px;
   margin: 0 auto;
   padding: 24px;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', sans-serif;
   background: #fff;
   color: #1a1a1a;
   box-sizing: border-box;
