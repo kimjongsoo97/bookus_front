@@ -1,43 +1,75 @@
 <template>
   <div class="container">
-    <HeaderComponent title="모임 생성 페이지"/>
+    <HeaderComponent title="모임 생성 페이지" />
 
     <!-- Form -->
     <div class="form-section">
       <!-- 모임 이름 -->
       <div class="form-group">
         <label>모임 이름</label>
-        <input type="text" v-model="form.name" placeholder="할 거 없으면 같이 책 읽자" />
+        <input
+          type="text"
+          v-model="form.name"
+          placeholder="모임 이름을 입력해주세요."
+        />
       </div>
 
       <!-- 모임 설명 -->
       <div class="form-group">
         <label>모임 설명</label>
-        <textarea v-model="form.description" placeholder="할 거 없으면 같이 책 읽자"></textarea>
+        <textarea
+          v-model="form.description"
+          placeholder="모임 설명을 입력해주세요."
+        ></textarea>
       </div>
 
-      <!-- 책 선택 -->
-      <div class="card clickable">
+      <!-- 책 선택 카드 -->
+      <div class="card clickable" @click="goToChooseBook">
         <div class="icon-text">
-          <!-- <img src="/icons/book-icon.png" alt="책 아이콘" class="icon" /> -->
+          <img
+            v-if="bookDetail?.image"
+            :src="bookDetail.image"
+            alt="책 표지"
+            class="icon"
+          />
           <div>
             <p class="label">책 선택</p>
-            <p class="value">{{ form.book || 'Choose Book' }}</p>
+            <p class="value">
+              {{
+                bookDetail
+                  ? bookDetail.title + " - " + bookDetail.author
+                  : "Choose Book"
+              }}
+            </p>
           </div>
         </div>
         <ChevronRightIcon class="chevron" />
       </div>
 
       <!-- 날짜 & 시간 -->
-      <div class="card clickable">
+      <div class="card clickable" @click="showDatePicker = true">
         <div class="icon-text">
           <!-- <img src="/icons/calendar-icon.png" alt="달력 아이콘" class="icon" /> -->
           <div>
             <p class="label">날짜 & 시간</p>
-            <p class="value">{{ form.datetime || 'Choose date and time' }}</p>
+            <p class="value">
+              {{ form.meeting_date || "Choose date and time" }}
+            </p>
           </div>
         </div>
         <ChevronRightIcon class="chevron" />
+      </div>
+
+      <!-- 최대 인원수 -->
+      <div class="form-group">
+        <label>최대 인원수</label>
+        <input
+          type="number"
+          v-model.number="form.max_members"
+          min="1"
+          max="6"
+          placeholder="최대 인원 (1~6)"
+        />
       </div>
 
       <!-- 모임 장소 -->
@@ -46,8 +78,8 @@
           <!-- <img src="/icons/location-icon.png" alt="위치 아이콘" class="icon" /> -->
           <div class="flex-grow">
             <p class="label">모임 장소</p>
-            <p class="value strong">{{ form.placeName || '오렌지 카페' }}</p>
-            <p class="value small">{{ form.place || '역삼역 222동 22번지' }}</p>
+            <p class="value strong">{{ form.placeName || "오렌지 카페" }}</p>
+            <p class="value small">{{ form.place || "역삼역 222동 22번지" }}</p>
             <button class="change-button" @click="changePlace">Change</button>
           </div>
           <ChevronRightIcon class="chevron" />
@@ -57,35 +89,117 @@
 
     <!-- Submit Button -->
     <div class="submit-button">
-      <button @click="createGroup">모임 생성</button>
+      <button @click="createMeeting">모임 생성</button>
     </div>
+    <DateTimePickerSheet
+      v-if="showDatePicker"
+      :min="new Date()"
+      @select="onDateSelected"
+      @close="showDatePicker = false"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { ChevronRightIcon } from 'lucide-vue-next'
-import HeaderComponent from '@/components/common/HeaderComponent.vue'
-import MeetingAPI from '@/api/meetingAPI'
-
+import { ref, onMounted } from "vue";
+import { ChevronRightIcon } from "lucide-vue-next";
+import HeaderComponent from "@/components/common/HeaderComponent.vue";
+import MeetingAPI from "@/api/meetingAPI";
+import BookAPI from "@/api/bookAPI";
+import DateTimePickerSheet from "@/components/common/DateTimePickerSheet.vue";
+import { useRoute, useRouter } from "vue-router";
 
 const form = ref({
-  name: '',
-  description: '',
-  book: '',
-  datetime: '',
-  place: '',
-  placeName: '',
-})
+  book: "",
+  name: "",
+  description: "",
+  meeting_date: "",
+  meeting_directions: "강남역 근처 오렌지카페",
+  map_directions: {
+    title: "오렌지카페",
+    address: "서울 강남구 강남대로 123",
+    x: "127.027",
+    y: "37.497",
+  },
+  max_members: 3,
+});
 
-const createGroup = () => {
-  console.log('모임 생성', form.value)
-  // TODO: 서버에 전송 로직 추가
-}
+const router = useRouter();
+const route = useRoute();
+
+const bookDetail = ref(null);
+
+onMounted(async () => {
+  const saved = localStorage.getItem("meetingForm");
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    form.value = {
+      ...form.value, // 기본값
+      ...parsed, // 저장된 값으로 덮어쓰기
+    };
+  }
+
+  const selectedBookId = route.query.book;
+  if (selectedBookId) {
+    form.value.book = selectedBookId;
+    try {
+      const response = await BookAPI.get(selectedBookId); // ✅ 이제 정상 작동
+      bookDetail.value = response.data;
+    } catch (error) {
+      console.error("책 정보 불러오기 실패:", error);
+    }
+  }
+
+  const name = route.query.name;
+  if (name) {
+    form.value.name = name;
+  }
+  const description = route.query.description;
+  if (description) {
+    form.value.description = description;
+  }
+});
+
+const showDatePicker = ref(false);
+const onDateSelected = ({ date, time }) => {
+  // 날짜와 시간을 결합하여 form.datetime에 저장
+  form.value.meeting_date = `${date} ${time}`;
+  showDatePicker.value = false; // 시트 닫기
+};
+
+const goToChooseBook = () => {
+  localStorage.setItem("meetingForm", JSON.stringify(form.value));
+  router.push({
+    name: "ChooseBook",
+  }); // name 확인 필요
+};
+
+const createMeeting = async () => {
+  try {
+    console.log("모임 생성 요청 데이터:", form.value);
+
+    const response = await MeetingAPI.create(form.value);
+    localStorage.removeItem("meetingForm"); // ✅ 생성 성공 시 폼 제거
+
+    console.log("모임 생성 성공:", response.data);
+    if (!response.data.id) {
+      console.error("응답에 id없음:", response.data);
+      return;
+    }
+    // 생성된 모임 ID 등 활용하여 상세 페이지로 이동하거나 알림
+    router.push({
+      name: "MeetingDetail",
+      params: { id: response.data.id },
+    });
+  } catch (error) {
+    console.error("모임 생성 실패:", error.response?.data || error.message);
+    alert("모임 생성에 실패했습니다. 입력 값을 확인해주세요.");
+  }
+};
 
 const changePlace = () => {
-  alert('장소 변경 기능은 추후 구현됩니다.')
-}
+  alert("장소 변경 기능은 추후 구현됩니다.");
+};
 </script>
 
 <style scoped>

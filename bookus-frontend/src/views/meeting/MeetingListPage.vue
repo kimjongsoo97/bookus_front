@@ -14,61 +14,72 @@
 
     <!-- 모임 리스트 -->
     <ul class="meeting-list">
-  <li
-    v-for="(item, i) in sortedMeetings"
-    :key="i"
-    class="meeting-item"
-    @click="goToDetail(item.id)"
-  >
-    <img v-if="item.book_img" :src="item.book_img" class="book-img" />
+      <li
+        v-for="(item, i) in sortedMeetings"
+        :key="i"
+        class="meeting-item"
+        @click="goToDetail(item.id)"
+      >
+        <img v-if="item.book_img" :src="item.book_img" class="book-img" />
 
-    <div class="meeting-info">
-      <div class="meeting-header">
-        <h3 class="meeting-title">{{ item.name }}</h3>
-        <span class="meeting-date">{{ formatDate(item.meeting_date) }}</span>
-      </div>
+        <div class="meeting-info">
+          <div class="meeting-header">
+            <h3 class="meeting-title">{{ item.name }}</h3>
+            <span class="meeting-date">{{
+              formatDate(item.meeting_date)
+            }}</span>
+          </div>
 
-      <p class="meeting-desc">{{ item.description }}</p>
+          <p class="meeting-desc">{{ item.description }}</p>
 
-      <div class="meeting-footer">
-        <span class="member-count">인원수: {{ item.current_member_count }} / {{ item.max_members }}</span>
-      </div>
-    </div>
-  </li>
-</ul>
+          <div class="meeting-footer">
+            <span class="member-count"
+              >인원수: {{ item.current_member_count }} /
+              {{ item.max_members }}</span
+            >
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <FloatingButton to="/meeting/create" />
 
     <BottomNav />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import HeaderComponent from '@/components/common/HeaderComponent.vue';
-import BottomNav from '@/components/common/BottomNav.vue';
-import MeetingAPI from '@/api/meetingAPI';
-import BookAPI from '@/api/bookAPI';
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import HeaderComponent from "@/components/common/HeaderComponent.vue";
+import BottomNav from "@/components/common/BottomNav.vue";
+import MeetingAPI from "@/api/meetingAPI";
+import BookAPI from "@/api/bookAPI";
+import FloatingButton from "@/components/common/FloatingButton.vue";
 
 const router = useRouter();
 
-const sort = ref('latest');
+const sort = ref("latest");
 const meetings = ref([]);
 
 function goToDetail(id) {
-  router.push({ name: 'MeetingDetail', params: { id } });
+  router.push({ name: "MeetingDetail", params: { id } });
 }
 
 function formatDate(dateStr) {
   const date = new Date(dateStr);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
 // 정렬된 리스트 반환
 const sortedMeetings = computed(() => {
   return [...meetings.value].sort((a, b) => {
-    if (sort.value === 'latest') {
+    if (sort.value === "latest") {
       return new Date(b.created_at) - new Date(a.created_at);
-    } else if (sort.value === 'due') {
+    } else if (sort.value === "due") {
       return new Date(a.meeting_date) - new Date(b.meeting_date);
     }
     return 0;
@@ -89,11 +100,11 @@ onMounted(async () => {
             const bookRes = await BookAPI.get(meeting.book);
             meeting.book_img = bookRes.data.img; // 이미지 속성 추가
           } catch (e) {
-            console.error('책 정보 가져오기 실패:', e);
-            meeting.book_img = ''; // 실패 시 빈 이미지 처리
+            console.error("책 정보 가져오기 실패:", e);
+            meeting.book_img = ""; // 실패 시 빈 이미지 처리
           }
         } else {
-          meeting.book_img = '';
+          meeting.book_img = "";
         }
         return meeting;
       })
@@ -101,10 +112,10 @@ onMounted(async () => {
 
     meetings.value = enrichedMeetings;
   } catch (error) {
-    console.error('모임 목록 불러오기 실패:', error);
+    console.error("모임 목록 불러오기 실패:", error);
   }
 });
-</script> 
+</script>
 
 <style scoped>
 .meeting-list-page {
@@ -222,5 +233,11 @@ onMounted(async () => {
   border: none;
   text-align: center;
   color: #333;
+}
+
+.post-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 16px 80px; /* 하단 네비/버튼 가려짐 방지 */
 }
 </style>

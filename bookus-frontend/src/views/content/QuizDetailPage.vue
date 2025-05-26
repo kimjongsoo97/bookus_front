@@ -25,7 +25,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, computed } from 'vue'
 import HeaderComponent from '@/components/common/HeaderComponent.vue'
 import BottomNav from '@/components/common/BottomNav.vue'

@@ -27,13 +27,13 @@
         <p class="desc">모임소개: {{ meeting.description }}</p>
       </section>
       <section class="section" v-if="isParticipant && meeting.members">
-        <p class="label">👥 참여 중인 멤버</p>  
+        <p class="label">👥 참여 중인 멤버</p>
         <ul>
           <li v-for="member in meeting.members" :key="member.id">
             {{ member.user_nickname }}
           </li>
         </ul>
-    </section>
+      </section>
 
       <!-- AI 추천 멘트 -->
       <div class="ai-box">
@@ -51,22 +51,42 @@
         </p>
       </section>
 
+      <!-- 우리들만의 챌린지 -->
+      <section class="section">
+        <p class="label">
+          우리들만의 챌린지
+          <span v-if="contents.length" class="more" @click="goToContentsPage"
+            >전체보기 ></span
+          >
+        </p>
 
-    <!-- 우리들만의 챌린지 -->
-    <section class="section" v-if="contents.length">
-      <p class="label">
-        우리들만의 챌린지
-        <span class="more" @click="goToContentsPage">전체보기 ></span>
-      </p>
-      <div class="challenge-list">
-        <div class="challenge" v-for="(item, i) in contents.slice(0, 2)" :key="i" @click="goToDetail(item.id)">
-          <span>{{ item.month }}월<br />{{ item.day }}</span>
-          <p>{{ item.title }}</p>
+        <!-- 컨텐츠 리스트가 존재하는 경우 -->
+        <div v-if="contents.length" class="challenge-list">
+          <div
+            class="challenge"
+            v-for="(item, i) in contents.slice(0, 2)"
+            :key="i"
+            @click="goToDetail(item.id)"
+          >
+            <span>{{ item.month }}월<br />{{ item.day }}</span>
+            <p>{{ item.title }}</p>
+          </div>
         </div>
-      </div>
-    </section>
 
-    <section class="section" v-if="!isParticipant">
+        <!-- 컨텐츠 없고, 내가 참여자인 경우 -->
+        <div v-else-if="isParticipant">
+          <p>아직 컨텐츠가 없어요. 첫 컨텐츠를 생성해보세요!</p>
+          <button
+            class="create-btn"
+            v-if="isCreator"
+            @click="goToCreateContents"
+          >
+            컨텐츠 생성하기
+          </button>
+        </div>
+      </section>
+
+      <section class="section" v-if="!isParticipant">
         추천 모임
         <p class="label">이런 모임도 추천해요</p>
         <ul class="recommend-list">
@@ -85,118 +105,154 @@
             <span class="due">D-17</span>
           </li>
         </ul>
-        <section v-if="!isParticipant" >
+        <section v-if="!isParticipant">
           <strong>마음에 드는 모임이 없나요?</strong>
           <p>모임을 직접 만들어 보세요</p>
-          <button class="create-btn" @click="goToCreatePage">모임 만들기</button>
+          <button class="create-btn" @click="goToCreate">모임 만들기</button>
         </section>
       </section>
     </div>
-
+    <button v-if="isParticipant && meeting.members" @click="withdrawMeeting">
+      탈퇴하기
+    </button>
     <!-- 고정 하단 버튼 -->
-<footer class="bottom-fixed" v-if="!isParticipant">
-  <button class="join-btn" @click="joinMeeting">모임 참여하기</button>
-</footer>
-
+    <footer class="bottom-fixed" v-if="!isParticipant">
+      <button class="join-btn" @click="joinMeeting">모임 참여하기</button>
+    </footer>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import MeetingAPI from '@/api/meetingAPI'
-import BookAPI from '@/api/bookAPI'
-import { useLoginStore } from '@/stores/login' // 실제 경로에 맞게 수정
+import { ref, computed, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import MeetingAPI from "@/api/meetingAPI";
+import BookAPI from "@/api/bookAPI";
+import { useLoginStore } from "@/stores/login"; // 실제 경로에 맞게 수정
+import MeetingCreatePage from "./MeetingCreatePage.vue";
 
-const loginStore = useLoginStore()
-const router = useRouter()
-const route = useRoute()
+const loginStore = useLoginStore();
+const router = useRouter();
+const route = useRoute();
 
-const myUserId = loginStore.userId
+const myUserId = loginStore.userId;
 
 const meeting = ref({
-  name: '',
-  creator_nickname: '',
-  description: '',
-  meeting_date: '',
-  location: '',
-  book: '',
+  name: "",
+  creator_nickname: "",
+  description: "",
+  meeting_date: "",
+  location: "",
+  book: "",
   members: [], // 이 필드 중요
-})
+});
 
 const book = ref({
-  title: '',
-  author: '',
-  img: '',
-})
+  title: "",
+  author: "",
+  img: "",
+});
 
 const contents = ref([]);
 
 // 참여 여부 확인
 const isParticipant = computed(() => {
-  return meeting.value.members?.some(member => member.user === myUserId)
-})
+  return meeting.value.members?.some((member) => member.user === myUserId);
+});
+
+const goToCreateContents = () => {
+  router.push(`/meeting/detail/${route.params.id}/contents/create`);
+};
 
 const joinMeeting = async () => {
-  const id = route.params.id
+  const id = route.params.id;
 
   try {
-    const response = await MeetingAPI.join(id)
+    const response = await MeetingAPI.join(id);
     if (response.data?.success) {
-      alert('모임에 성공적으로 참여하였습니다!')
-      router.go(0) // 새로고침
+      alert("모임에 성공적으로 참여하였습니다!");
+      router.go(0); // 새로고침
     } else {
-      alert('참여에 실패했습니다. 다시 시도해주세요.')
+      alert("참여에 실패했습니다. 다시 시도해주세요.");
     }
   } catch (error) {
     if (error.response && error.response.data?.detail) {
-      alert(error.response.data.detail)
+      alert(error.response.data.detail);
     } else {
-      alert('알 수 없는 에러가 발생했습니다.')
+      alert("알 수 없는 에러가 발생했습니다.");
     }
-    console.error('참여 요청 실패:', error)
+    console.error("참여 요청 실패:", error);
   }
-}
+};
 
+const withdrawMeeting = async () => {
+  const id = route.params.id;
+
+  try {
+    const response = await MeetingAPI.withdraw(id);
+    if (
+      response.data?.detail.includes("성공적으로 탈퇴되었습니다") ||
+      response.data?.detail.includes("모임장이 탈퇴하여 모임이 삭제되었습니다")
+    ) {
+      alert(response.data.detail); // 백엔드 메시지 표시
+      router.push("/"); // 홈페이지로 리다이렉트
+    } else {
+      alert("탈퇴에 실패했습니다. 다시 시도해주세요.");
+    }
+  } catch (error) {
+    if (error.response && error.response.data?.detail) {
+      alert(error.response.data.detail);
+    } else {
+      alert("알 수 없는 에러가 발생했습니다.");
+    }
+    console.error("탈퇴 요청 실패:", error);
+  }
+};
+
+const isCreator = computed(() => {
+  return meeting.value.creator === myUserId;
+});
+
+const goToCreate = () => {
+  router.push(`/meeting/create`);
+};
 const goToContentsPage = () => {
   router.push(`/meeting/detail/${route.params.id}/contents/`);
-}
+};
 
 function goToDetail(contentId) {
-  const meetingId = route.params.meetingId || route.params.id
-  router.push(`/meeting/${meetingId}/contents/detail/${contentId}/`)
+  const meetingId = route.params.meetingId || route.params.id;
+  router.push(`/meeting/detail/${meetingId}/contents/detail/${contentId}/`);
 }
 
 function formatDate(dateStr) {
-  const date = new Date(dateStr)
-  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
+  const date = new Date(dateStr);
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
 }
 
 onMounted(async () => {
-  const id = route.params.id
+  const id = route.params.id;
   try {
-    const res = await MeetingAPI.get(id)
-    meeting.value = res.data
+    const res = await MeetingAPI.get(id);
+    meeting.value = res.data;
 
     if (meeting.value.book) {
-      const bookRes = await BookAPI.get(meeting.value.book)
-      book.value = bookRes.data
+      const bookRes = await BookAPI.get(meeting.value.book);
+      book.value = bookRes.data;
     }
 
-    const contentRes = await MeetingAPI.getContents(id)
-    contents.value = (contentRes.data || []).map(item => {
-      const date = new Date(item.reveal_date)
+    const contentRes = await MeetingAPI.getContents(id);
+    contents.value = (contentRes.data || []).map((item) => {
+      const date = new Date(item.reveal_date);
       return {
         ...item,
         month: date.getMonth() + 1,
-        day: date.getDate()
-      }
-    })
+        day: date.getDate(),
+      };
+    });
   } catch (err) {
-    console.error('모임 상세 정보 조회 실패:', err)
+    console.error("모임 상세 정보 조회 실패:", err);
   }
-})
-
+});
 </script>
 
 <style scoped>
