@@ -1,8 +1,7 @@
 <template>
   <div class="place-setting-page">
     <div id="map" class="map-container"></div>
-
-    </div>
+  </div>
 </template>
 
 <script setup>
@@ -26,13 +25,41 @@ const props = defineProps({
 let map = null
 let marker = null
 
+// ✅ 네이버 지도 스크립트 로드 대기 함수
+function waitForNaverScript(callback, maxWait = 3000) {
+  const interval = 100
+  let waited = 0
+
+  const check = () => {
+    if (window.naver && window.naver.maps) {
+      callback()
+    } else if (waited < maxWait) {
+      setTimeout(() => {
+        waited += interval
+        check()
+      }, interval)
+    } else {
+      console.error('❌ 네이버 지도 스크립트 로드 실패 또는 시간 초과')
+    }
+  }
+
+  check()
+}
+
 onMounted(async () => {
   await nextTick()
 
-  const mapContainer = document.getElementById('map')
+  waitForNaverScript(() => {
+    const mapContainer = document.getElementById('map')
+    const lat = Number(props.lat)
+    const lng = Number(props.lng)
 
-  if (window.naver && window.naver.maps && props.lat && props.lng && mapContainer) {
-    const position = new naver.maps.LatLng(props.lat, props.lng)
+    if (!mapContainer || isNaN(lat) || isNaN(lng)) {
+      console.error('🛑 DOM 또는 좌표가 유효하지 않습니다.', { lat, lng, mapContainer })
+      return
+    }
+
+    const position = new naver.maps.LatLng(lat, lng)
 
     map = new naver.maps.Map(mapContainer, {
       center: position,
@@ -44,14 +71,15 @@ onMounted(async () => {
       map: map,
     })
 
- 
-  } else {
-    console.error()
-  }
+    if (props.title) {
+      const infoWindow = new naver.maps.InfoWindow({
+        content: `<div style="padding:8px;font-size:13px;">${props.title}</div>`,
+      })
+      infoWindow.open(map, marker)
+    }
+  })
 })
 </script>
-
-
 
 <style scoped>
 .place-setting-page {
@@ -60,74 +88,14 @@ onMounted(async () => {
   padding: 16px;
   font-family: 'sans-serif';
   background: #fff;
-  min-height: 50;
   display: flex;
   flex-direction: column;
 }
-.header {
-  text-align: center;
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 12px;
-}
+
 .map-container {
   width: 100%;
   height: 200px;
   border: 1px solid #ddd;
   border-radius: 8px;
-}
-.place-info {
-  margin-top: 16px;
-  padding: 12px;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  background: #f9f9f9;
-}
-.label {
-  font-size: 13px;
-  color: #888;
-  margin-bottom: 4px;
-}
-.place-name {
-  font-weight: bold;
-  font-size: 15px;
-}
-.place-address {
-  font-size: 14px;
-  color: #666;
-}
-.search-box {
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
-}
-.search-input {
-  flex: 1;
-  padding: 8px;
-  font-size: 14px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-.search-button {
-  padding: 8px 12px;
-  font-size: 14px;
-  background-color: #1976d2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.register-button {
-  margin-top: auto;
-  margin-bottom: 12px;
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #1976d2;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
 }
 </style>

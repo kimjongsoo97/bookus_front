@@ -45,7 +45,9 @@
       <section class="section">
         <p class="label">모임장소 및 날짜</p>
         <!-- <img :src="meeting.map_image_url" class="map-img" /> -->
-         <NaverMap
+<!-- 상위 컴포넌트에서 조건 추가 -->
+<NaverMap
+  v-if="meeting.map_directions && meeting.map_directions.x && meeting.map_directions.y"
   :lat="Number(meeting.map_directions.y)"
   :lng="Number(meeting.map_directions.x)"
   :title="meeting.map_directions.title"
@@ -248,7 +250,7 @@ onMounted(async () => {
   try {
     const res = await MeetingAPI.get(id);
     meeting.value = res.data;
-        // ✅ map_directions가 문자열이면 파싱
+        // ✅ map_directions가 문자열이면 파싱\
     if (typeof meeting.value.map_directions === 'string') {
       try {
         meeting.value.map_directions = JSON.parse(meeting.value.map_directions);

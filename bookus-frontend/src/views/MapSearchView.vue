@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>지도페이지</h1>
-    <NaverMap />
+    <NaverMapSearch />
   </div>
 </template>
 
