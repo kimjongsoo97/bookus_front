@@ -53,6 +53,7 @@
       </button>
     </div>
     <button @click="deleteContent" class="delete-btn">삭제하기</button>
+    <BottomNav/>
   </div>
 </template>
 
@@ -61,6 +62,7 @@ import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useLoginStore } from "@/stores/login";
 import HeaderComponent from "@/components/common/HeaderComponent.vue";
+import BottomNav from "@/components/common/BottomNav.vue";
 import AnswerCard from "@/components/contents/AnswerCard.vue";
 import ContentAPI from "@/api/contentAPI";
 
