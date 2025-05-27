@@ -28,4 +28,11 @@ export default [
     name: "ContentDetail",
     component: () => import("@/views/content/ContentDetailPage.vue"),
   },
+  {
+    path: "/meeting/detail/:meetingId/contents/:contentId/book-review-compilation",
+      name: "BookReviewCompilation",
+      component: () => import("@/views/content/BookReviewCompilation.vue"),
+  }
+
+
 ];

@@ -31,7 +31,6 @@
         <label for="password">비밀번호</label>
         <div class="input-wrapper">
           <input v-model="user.password" type="password" id="password" placeholder="비밀번호 입력" />
-          <button type="button" class="icon-btn">👁️</button>
         </div>
       </div>
 

@@ -3,6 +3,8 @@
     <HeaderComponent title="메모" />
     <MemoList :memos="memoList" @click-memo="goToDetail" />
     <BottomNav />
+    <FloatingButton  to="/memo/create" /> 
+
   </div>
 </template>
 
@@ -10,7 +12,7 @@
 import HeaderComponent from '@/components/common/HeaderComponent.vue'
 import MemoList from '@/components/memo/MemoList.vue'
 import BottomNav from '@/components/common/BottomNav.vue'
-
+import FloatingButton from '@/components/common/FloatingButton.vue'
 import MemoAPI from '@/api/memoAPI'
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'

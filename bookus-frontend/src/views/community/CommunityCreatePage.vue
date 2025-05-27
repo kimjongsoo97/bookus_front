@@ -147,6 +147,7 @@ input[type="file"] {
 .create-btn {
   width: 100%;
   padding: 14px;
+  margin-bottom: 70px;
   font-size: 16px;
   font-weight: bold;
   background-color: #00a3ff;
