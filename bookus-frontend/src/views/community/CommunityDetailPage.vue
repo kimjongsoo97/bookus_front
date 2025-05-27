@@ -142,9 +142,12 @@ function goToMessage() {
 }
 
 .thumbnail {
-  width: 100%;
+  width: 50%;
   border-radius: 10px;
   margin-bottom: 12px;
+  display: block; /* 블록 요소로 변경 */
+  margin-left: auto; /* 좌우 중앙 정렬 */
+  margin-right: auto;
 }
 
 .body {
@@ -176,7 +179,7 @@ function goToMessage() {
 }
 
 .delete-btn {
-  background-color: #ff5c5c;
+  background-color: #FF962D;
   color: white;
 }
 </style>

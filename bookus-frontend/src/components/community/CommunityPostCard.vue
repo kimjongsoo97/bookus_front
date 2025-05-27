@@ -107,8 +107,11 @@ function goToMessage() {
   font-size: 14px;
   color: #555;
   margin-top: -10px;
+  max-width: 375px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 </style>
