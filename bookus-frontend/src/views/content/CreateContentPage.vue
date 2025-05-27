@@ -45,15 +45,15 @@
 
       <template v-else-if="type === 'DISCUSSION'">
         <div class="form-group">
-          <label>토론 주제</label>
+          <label>토론 내용</label>
           <textarea v-model="content" placeholder="토론 주제를 입력해주세요" />
         </div>
       </template>
 
       <template v-else-if="type === 'QUIZ'">
         <div class="form-group">
-          <label>정답 / 힌트</label>
-          <input v-model="content" placeholder="정답: 힌트 예시" />
+          <label>힌트</label>
+          <input v-model="content" placeholder="힌트를 적어주세요" />
         </div>
       </template>
     </main>

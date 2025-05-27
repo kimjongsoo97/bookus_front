@@ -31,7 +31,8 @@ export default [
   {
     path: '/meeting/detail/:id',
     name: 'MeetingDetail',
-    component: () => import('@/views/meeting/MeetingDetaiPage.vue')
+    component: () => import('@/views/meeting/MeetingDetaiPage.vue'),
+
   },
   {
     path:'/contents/quiz/:id',
@@ -43,4 +44,9 @@ export default [
     name:'ReviewDetail',
     component:()=> import('@/views/content/ReviewDetailPage.vue')
   },
+  {
+  path: "/meeting/my",
+  name: "MyMeetingList",
+  component: () => import("@/views/meeting/MyMeetingListPage.vue")
+}
 ]

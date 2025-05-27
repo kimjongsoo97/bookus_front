@@ -19,7 +19,7 @@ instance.interceptors.request.use(
     return config;
   },
   (error) => {
-    return Promise.reject(error);
+    return Promise.reject(error); vmf
   }
 )
 //응답인터셉터 -> 200 정상응답 400-> 페이지 없음

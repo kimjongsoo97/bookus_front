@@ -24,6 +24,10 @@ const MeetingAPI = {
   getContents(meetingId) {
     return api.get(`/api/v1/meeting/detail/${meetingId}/contents/`)
   },
+  my() {
+    return api.get(`${BASE_URL}/my/`);
+  }
+
 };
 
 export default MeetingAPI 

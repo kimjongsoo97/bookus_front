@@ -44,7 +44,7 @@ const menus = [
   {
     label: '내 모임',
     icon: 'https://cdn-icons-png.flaticon.com/128/15861/15861106.png',
-    route:'/mypage/group'
+    route:'/meeting/my'
 },
   {
     label: '쪽지함',

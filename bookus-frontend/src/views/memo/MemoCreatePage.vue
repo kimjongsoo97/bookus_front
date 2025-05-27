@@ -107,6 +107,7 @@ const submitMemo = async () => {
   display: flex;
   flex-direction: column;
   font-family: 'Pretendard', sans-serif;
+  margin-bottom: 60px;
 
 }
 

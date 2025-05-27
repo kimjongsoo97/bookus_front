@@ -1,6 +1,6 @@
 <template>
   <div class="place-setting-page">
-    <div class="header">장소 설정 페이지</div>
+   <HeaderComponent title="장소 선택 페이지"/>
 
     <div id="map" class="map-container"></div>
 
@@ -27,6 +27,7 @@
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import HeaderComponent from './common/HeaderComponent.vue'
 const map = ref(null)
 const marker = ref(null)
 const infoWindow = ref(null)
