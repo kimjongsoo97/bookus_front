@@ -74,7 +74,6 @@ async function createNote() {
 <style scoped>
 .note-create-page {
   max-width: 375px;
-  margin: 0 auto;
   padding: 16px;
   font-family: "Pretendard", sans-serif;
 }
@@ -114,7 +113,7 @@ textarea {
   border-radius: 8px;
   padding: 10px;
   font-size: 14px;
-  width: 100%;
+
   resize: none;
 }
 

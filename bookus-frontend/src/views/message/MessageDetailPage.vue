@@ -1,6 +1,6 @@
 <template>
   <div class="message-detail-page">
-    <HeaderComponent title="쪽지 생성 페이지" />
+    <HeaderComponent title="쪽지 상세 페이지" />
 
     <div class="content">
       <p><strong>보낸 사람:</strong> {{ message.counterpart_nickname }}</p>

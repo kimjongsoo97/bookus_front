@@ -182,10 +182,15 @@ onMounted(() => {
   border-radius: 10px;
   border: none;
   cursor: pointer;
+  display: flex; /* flexbox 활성화 */
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+  font-family: 'Pretendard', sans-serif; /* 동일한 폰트 명시 */
 }
 .buy {
   background: #00a3ff;
   color: #fff;
+  text-decoration: none;
 }
 .save {
   background: #f5f5f5;

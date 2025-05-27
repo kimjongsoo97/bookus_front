@@ -89,26 +89,8 @@
       </section>
 
       <section class="section" v-if="!isParticipant">
-        추천 모임
-        <p class="label">이런 모임도 추천해요</p>
-        <ul class="recommend-list">
-          <li class="recommend">
-            <div class="info">
-              <strong>왕자 릴 사람</strong>
-              <p>진심과 감정이 녹아있는...</p>
-            </div>
-            <span class="due">D-17</span>
-          </li>
-          <li class="recommend">
-            <div class="info">
-              <strong>온다온다 소년이 온다</strong>
-              <p>6월 추천도서로 등록된 작품...</p>
-            </div>
-            <span class="due">D-17</span>
-          </li>
-        </ul>
         <section v-if="!isParticipant">
-          <strong>마음에 드는 모임이 없나요?</strong>
+          <strong>모임이 마음에 들지 않으시나요?</strong>
           <p>모임을 직접 만들어 보세요</p>
           <button class="create-btn" @click="goToCreate">모임 만들기</button>
         </section>
@@ -318,8 +300,7 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   padding: 14px 16px;
-  font-size: 16px;
-  font-weight: bold;
+
   border-bottom: 1px solid #eee;
 }
 

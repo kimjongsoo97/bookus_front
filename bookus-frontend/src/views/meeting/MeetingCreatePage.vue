@@ -38,7 +38,7 @@
               {{
                 bookDetail
                   ? bookDetail.title + " - " + bookDetail.author
-                  : "Choose Book"
+                  : "책을 선정해 주세요."
               }}
             </p>
           </div>
@@ -53,7 +53,7 @@
           <div>
             <p class="label">날짜 & 시간</p>
             <p class="value">
-              {{ form.meeting_date || "Choose date and time" }}
+              {{ form.meeting_date || "모임 날짜와 시간을 선정해 주세요." }}
             </p>
           </div>
         </div>
@@ -78,9 +78,9 @@
           <!-- <img src="/icons/location-icon.png" alt="위치 아이콘" class="icon" /> -->
           <div class="flex-grow" @click="goNaverMap">
             <p class="label">모임 장소</p>
-           <p class="value strong">{{ form.map_directions.title || "오렌지 카페" }}</p>
-<p class="value small">{{ form.map_directions.address || "역삼역 222동 22번지" }}</p>
-            <button class="change-button" @click="changePlace">Change</button>
+            <p class="value strong">{{ form.map_directions.title || "오렌지 카페" }}</p>
+            <p class="value small">{{ form.map_directions.address || "역삼역 222동 22번지" }}</p>
+            <button class="change-button" @click="goNaverMap">Change</button>
           </div>
           <ChevronRightIcon class="chevron" />
         </div>
@@ -214,9 +214,7 @@ const createMeeting = async () => {
   }
 };
 
-const changePlace = () => {
-  alert("장소 변경 기능은 추후 구현됩니다.");
-};
+
 </script>
 
 <style scoped>
